@@ -1,20 +1,16 @@
-CONFIG = {
-    'camera': {
-        'width': 640,
-        'height': 480,
-        'fps': 30
-    },
-    'servo': {
-        'pin': 18,  # GPIO pin number
-        'open_position': 7.5,  # Duty cycle for open position
-        'close_position': 2.5  # Duty cycle for closed position
-    },
-    'model': {
-        'path': 'model.tflite',
-        'input_size': 224,  # Model input size
-        'confidence_threshold': 0.5
-    },
-    'server': {
-        'url': 'http://your-server-address'
-    }
-}
+import cv2
+
+class Config:
+    
+    SQUIRREL_MODEL_PATH = ""
+    HANDS_MODEL_PATH = ""
+
+    SERVO_PIN = 14
+
+    FRAME_SIZE = (640, 480)
+    FPS = 20.0
+    FOURCC = cv2.VideoWriter_fourcc(*"MP4V")
+
+    UPLOAD_URL = "http://yourserver.com/upload"
+    VIDEO_FOLDER = "videos"
+    
