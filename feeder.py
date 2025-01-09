@@ -15,6 +15,7 @@ class SmartFeeder:
         self.storage    = VideoStorage()
         self.squirrel_detector  = SquirrelDetector()
         self.hands_detector     = HandsDetector()
+        log.info("Smart feeder init")
 
     def work(self):
         while True:
@@ -30,12 +31,16 @@ class SmartFeeder:
             self.camera.stop_capture()
             self.servo.close_cover()
             self.storage.go_to_next()
-            threading.Thread(self.storage.send_to_server(), daemon=True).start()
+            threading.Thread(target=self.storage.send_to_server, daemon=True).start()
+        else:
+            log.info("Capture continues")
 
     def _handle_cover_opened(self):
         self.camera.update_frame()
         if not self.hands_detector.detect(self.camera.get_frame()):
             self.servo.close_cover()
+        else:
+            log.info("Cover is still open")
 
     def _handle_cover_closed(self):
         self.camera.update_frame()
@@ -46,7 +51,7 @@ class SmartFeeder:
         elif self.squirrel_detector.detect(self.camera.get_frame()):
             self.servo.open_cover()
             threading.Thread(
-                self.camera.capture_video,
+                target=self.camera.capture_video,
                 args=[self.storage.get_new_video_name()],
                 daemon=True,
             ).start()
