@@ -34,6 +34,7 @@ class SmartFeeder:
             threading.Thread(target=self.storage.send_to_server, daemon=True).start()
         else:
             log.info("Capture continues")
+            time.sleep(10)
 
     def _handle_cover_opened(self):
         self.camera.update_frame()
@@ -41,6 +42,7 @@ class SmartFeeder:
             self.servo.close_cover()
         else:
             log.info("Cover is still open")
+            time.sleep(10)
 
     def _handle_cover_closed(self):
         self.camera.update_frame()
