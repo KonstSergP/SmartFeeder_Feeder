@@ -9,6 +9,7 @@ class Camera:
                 
         self.frame = None
         self.capturing = False
+        self.capture_stopped = False
         self.lock = threading.Lock()
 
     def update_frame(self):
@@ -20,9 +21,10 @@ class Camera:
     def get_frame(self):
         with self.lock:
             return self.frame
-    
+
     def capture_video(self, video_name):
         self.capturing = True
+        log.info("Capture started")
         
         out = cv2.VideoWriter(video_name, Config.FOURCC, Config.FPS, Config.FRAME_SIZE)
         
@@ -33,6 +35,10 @@ class Camera:
                     out.write(self.frame)
         
         out.release()
+        self.capture_stopped = False
 
     def stop_capture(self):
+        self.capture_stopped = True
         self.capturing = False
+        while self.capture_stopped: pass
+        log.info("Capture stopped")

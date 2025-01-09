@@ -13,7 +13,7 @@ class VideoStorage:
             os.makedirs(Config.VIDEO_FOLDER)
     
     def get_new_video_name(self):
-        path = os.path.join(Config.VIDEO_FOLDER, f"{self.last_id}")
+        path = os.path.join(Config.VIDEO_FOLDER, f"{self.last_id}.mp4")
         return path
 
     def go_to_next(self):
@@ -22,6 +22,18 @@ class VideoStorage:
     def send_to_server(self):
         with self.lock:
             for filename in os.listdir(Config.VIDEO_FOLDER):
-                if filename != f"{self.last_id}":
+                if filename != f"{self.last_id}.mp4":
+                    is_sent = False
                     with open(os.path.join(Config.VIDEO_FOLDER, filename), "rb") as f:
-                        requests.post(Config.UPLOAD_URL, files={"video": f})
+                        files={"video": f}
+                        try:
+                            r = requests.post(Config.UPLOAD_URL, files=files)
+                            if r.status_code == 200:
+                                is_sent = True
+                                log.info(f"Video {filename} sent")
+                            else:
+                                log.error("Server error")
+                        except ConnectionError:
+                            log.error("Can\'t connect to server")
+                    if is_sent:
+                        os.remove(os.path.join(Config.VIDEO_FOLDER, filename))
