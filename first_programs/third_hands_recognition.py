@@ -8,7 +8,6 @@ handsModule = mediapipe.solutions.hands
 
 #Use CV2 Functionality to create a Video stream and add some values
 cap = cv2.VideoCapture(0)
-fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 
 #Add confidence values and extra settings to MediaPipe hand tracking. As we are using a live video stream this is not a static
 #image mode, confidence values in regards to overall detection and tracking and we will only let two hands be tracked at the same time
@@ -45,7 +44,7 @@ with handsModule.Hands(static_image_mode=False, min_detection_confidence=0.7, mi
                           #print(normalizedLandmark)
             
            #Below shows the current frame to the desktop 
-           cv2.imshow("Frame", frame1);
+           cv2.imshow("Frame", frame1)
            key = cv2.waitKey(1) & 0xFF
            
            #Below states that if the |q| is press on the keyboard it will stop the system
