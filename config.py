@@ -27,7 +27,6 @@ class Config:
     FRAME_SIZE = (640, 480)
     BITRATE = 10000000
     FORMAT = "RGB888"
-    FOURCC = cv2.VideoWriter_fourcc(*"mp4v")
 
     UPLOAD_URL = "http://192.168.1.74:5000/upload"
     VIDEO_FOLDER = "videos"

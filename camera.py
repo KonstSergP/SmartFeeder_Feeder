@@ -1,7 +1,6 @@
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
-from picamera.outputs import FfmpegOutput
-import cv2
+from picamera2.outputs import FfmpegOutput
 
 from config import *
 
@@ -12,6 +11,7 @@ class Camera:
                     main={"size": Config.FRAME_SIZE,
                           "format": Config.FORMAT}
                     ))
+        self.picam.start()
 
         self.capturing = False
         self.capture_stopped = False
@@ -27,6 +27,7 @@ class Camera:
         while self.capturing: pass
 
         self.picam.stop_recording()
+        self.picam.start()
         self.capture_stopped = False
 
     def stop_capture(self):

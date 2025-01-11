@@ -68,7 +68,6 @@ class SquirrelDetector:
                 cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
 
                 cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
-
         cv2.imshow('Object detector', frame)
         cv2.waitKey(1)
         return found
@@ -87,6 +86,7 @@ class HandsDetector:
         if results.multi_hand_landmarks != None:
             for handLandmarks in results.multi_hand_landmarks:
                   drawingModule.draw_landmarks(frame1, handLandmarks, handsModule.HAND_CONNECTIONS)
+
         cv2.imshow('Object detector', frame1)
         cv2.waitKey(1)
         return results.multi_hand_landmarks != None

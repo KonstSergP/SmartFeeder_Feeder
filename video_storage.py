@@ -22,6 +22,7 @@ class VideoStorage:
     def send_to_server(self):
         with self.lock:
             for filename in os.listdir(Config.VIDEO_FOLDER):
+                print(filename)
                 if filename != f"{self.last_id}.mp4":
                     is_sent = False
                     with open(os.path.join(Config.VIDEO_FOLDER, filename), "rb") as f:
