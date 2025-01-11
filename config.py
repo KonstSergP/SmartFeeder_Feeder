@@ -25,7 +25,8 @@ class Config:
     CLOSE_ANGLE = 0
 
     FRAME_SIZE = (640, 480)
-    FPS = 20.0 # maybe 30?
+    BITRATE = 10000000
+    FORMAT = "RGB888"
     FOURCC = cv2.VideoWriter_fourcc(*"mp4v")
 
     UPLOAD_URL = "http://192.168.1.74:5000/upload"

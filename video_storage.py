@@ -33,7 +33,7 @@ class VideoStorage:
                                 log.info(f"Video {filename} sent")
                             else:
                                 log.error("Server error")
-                        except ConnectionError:
-                            log.error("Can\'t connect to server")
+                        except:
+                            log.error("Can\'t send video to server")
                     if is_sent:
                         os.remove(os.path.join(Config.VIDEO_FOLDER, filename))

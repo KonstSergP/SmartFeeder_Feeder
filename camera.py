@@ -1,40 +1,32 @@
+from picamera2 import Picamera2
+from picamera2.encoders import H264Encoder
+from picamera.outputs import FfmpegOutput
 import cv2
-import threading
 
 from config import *
 
 class Camera:
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
-                
-        self.frame = None
+        self.picam = Picamera2()
+        self.picam.configure(self.picam.create_video_configuration(
+                    main={"size": Config.FRAME_SIZE,
+                          "format": Config.FORMAT}
+                    ))
+
         self.capturing = False
         self.capture_stopped = False
-        self.lock = threading.Lock()
-
-    def update_frame(self):
-        with self.lock:
-            ret, self.frame = self.cap.read()
-        if not ret:
-            print("Where is frame?")
 
     def get_frame(self):
-        with self.lock:
-            return self.frame
+        return self.picam.capture_array()
 
     def capture_video(self, video_name):
         self.capturing = True
         log.info("Capture started")
+        self.picam.start_recording(H264Encoder(bitrate=Config.BITRATE), FfmpegOutput(video_name))
         
-        out = cv2.VideoWriter(video_name, Config.FOURCC, Config.FPS, Config.FRAME_SIZE)
-        
-        while self.capturing:
-            self.update_frame()
-            with self.lock:
-                if self.frame is not None:
-                    out.write(self.frame)
-        
-        out.release()
+        while self.capturing: pass
+
+        self.picam.stop_recording()
         self.capture_stopped = False
 
     def stop_capture(self):
