@@ -19,6 +19,7 @@ class SmartFeeder:
 
     def work(self):
         while True:
+            log.info("iter")
             if self.camera.capturing:
                 self._handle_capture()
             elif self.servo.cover_opened:
