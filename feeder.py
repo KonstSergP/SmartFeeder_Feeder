@@ -37,7 +37,6 @@ class SmartFeeder:
             time.sleep(10)
 
     def _handle_cover_opened(self):
-        self.camera.update_frame()
         if not self.hands_detector.detect(self.camera.get_frame()):
             self.servo.close_cover()
         else:
@@ -45,11 +44,10 @@ class SmartFeeder:
             time.sleep(10)
 
     def _handle_cover_closed(self):
-        self.camera.update_frame()
         if self.hands_detector.detect(self.camera.get_frame()):
             self.servo.open_cover()
             time.sleep(10)
-            
+
         elif self.squirrel_detector.detect(self.camera.get_frame()):
             self.servo.open_cover()
             threading.Thread(
