@@ -1,4 +1,3 @@
-import cv2
 import logging
 import sys
 import os
@@ -17,8 +16,6 @@ class Config:
     SQUIRREL_LABELS_PATH = os.path.join("squirrel_model", "labelmap.txt")
     
     MIN_CONF_THRESHHOLD = 0.9
-    
-    HANDS_MODEL_PATH = ""
 
     SERVO_PIN = 14
     OPEN_ANGLE = 90
@@ -27,6 +24,8 @@ class Config:
     FRAME_SIZE = (640, 480)
     BITRATE = 10000000
     FORMAT = "RGB888"
+    VIDEO_FILE_EXT = "mp4"
 
     UPLOAD_URL = "http://192.168.1.74:5000/upload"
     VIDEO_FOLDER = "videos"
+    CONN_TIMEOUT = 5
