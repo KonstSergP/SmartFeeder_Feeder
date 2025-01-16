@@ -2,7 +2,8 @@ import time
 import threading
 
 from camera import Camera
-from detection import SquirrelDetector, HandsDetector
+from squirrel_detection import SquirrelDetector
+from hands_detection import HandsDetector
 from servo import Servo
 from video_storage import VideoStorage
 from config import *
@@ -16,10 +17,15 @@ class SmartFeeder:
         self.squirrel_detector  = SquirrelDetector()
         self.hands_detector     = HandsDetector()
         log.info("Smart feeder init")
+    
+    def cleanup(self):
+        self.camera.cleanup()
+        self.servo.cleanup()
+        self.storage.cleanup()
 
     def work(self):
         while True:
-            log.info("iter")
+            log.debug("Next iteration")
             if self.camera.capturing:
                 self._handle_capture()
             elif self.servo.cover_opened:
@@ -31,23 +37,23 @@ class SmartFeeder:
         if not self.squirrel_detector.detect(self.camera.get_frame()):
             self.camera.stop_capture()
             self.servo.close_cover()
-            self.storage.go_to_next()
+            self.storage.go_to_next_name()
             threading.Thread(target=self.storage.send_to_server, daemon=True).start()
         else:
             log.info("Capture continues")
-            time.sleep(10)
+            time.sleep(Config.SLEEP_TIME)
 
     def _handle_cover_opened(self):
         if not self.hands_detector.detect(self.camera.get_frame()):
             self.servo.close_cover()
         else:
             log.info("Cover is still open")
-            time.sleep(10)
+            time.sleep(Config.SLEEP_TIME)
 
     def _handle_cover_closed(self):
         if self.hands_detector.detect(self.camera.get_frame()):
             self.servo.open_cover()
-            time.sleep(10)
+            time.sleep(Config.SLEEP_TIME)
 
         elif self.squirrel_detector.detect(self.camera.get_frame()):
             self.servo.open_cover()
@@ -56,4 +62,4 @@ class SmartFeeder:
                 args=[self.storage.get_new_video_name()],
                 daemon=True,
             ).start()
-            time.sleep(10)
+            time.sleep(Config.SLEEP_TIME)

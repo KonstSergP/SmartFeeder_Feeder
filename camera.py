@@ -1,20 +1,29 @@
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 from picamera2.outputs import FfmpegOutput
+import threading
 
 from config import *
 
 class Camera:
     def __init__(self):
-        self.picam = Picamera2()
+        try:
+            self.picam = Picamera2()
+        except:
+            log.error("Can\'t turn on camera", exc_info=True)
+            exit(1)
         self.picam.configure(self.picam.create_video_configuration(
-                    main={"size": Config.FRAME_SIZE,
+                    main={"size":   Config.FRAME_SIZE,
                           "format": Config.FORMAT}
                     ))
         self.picam.start()
 
         self.capturing = False
-        self.capture_stopped = False
+        self.capturing_c = threading.Condition()
+    
+    def cleanup(self):
+        if self.capturing:
+            self.stop_capture()
 
     def get_frame(self):
         return self.picam.capture_array()
@@ -22,16 +31,18 @@ class Camera:
     def capture_video(self, video_name):
         self.capturing = True
         log.info("Capture started")
-        self.picam.start_recording(H264Encoder(bitrate=Config.BITRATE), FfmpegOutput(video_name))
+        output = FfmpegOutput(video_name)
+        self.picam.start_recording(H264Encoder(bitrate=Config.BITRATE), output)
         
-        while self.capturing: pass
+        with self.capturing_c:
+            self.capturing = True
+            self.capturing_c.wait()
+            self.capturing = False
 
         self.picam.stop_recording()
+        log.info("Capture stopped")
         self.picam.start()
-        self.capture_stopped = False
 
     def stop_capture(self):
-        self.capture_stopped = True
-        self.capturing = False
-        while self.capture_stopped: pass
-        log.info("Capture stopped")
+        with self.capturing_c:
+            self.capturing_c.notify()

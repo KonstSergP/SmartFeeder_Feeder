@@ -1,31 +1,37 @@
 import logging
 import sys
-import os
+
+from argument_parser import *
 
 
 log = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 log.addHandler(handler)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG if args.debug else logging.INFO)
 
 
 class Config:
+    DEBUG = args.debug
     
-    SQUIRREL_MODEL_PATH  = os.path.join("squirrel_model", "detect.tflite")
-    SQUIRREL_LABELS_PATH = os.path.join("squirrel_model", "labelmap.txt")
+    SQUIRREL_MODEL_PATH  = args.smp
+    SQUIRREL_LABELS_PATH = args.slp
     
-    MIN_CONF_THRESHHOLD = 0.9
+    MIN_CONF_THRESHHOLD  = args.min_conf_threshhold
 
-    SERVO_PIN = 14
+    SERVO_PIN = args.servo_pin
     OPEN_ANGLE = 90
     CLOSE_ANGLE = 0
+    
+    SLEEP_TIME = 5
 
-    FRAME_SIZE = (640, 480)
+    FRAME_SIZE = (args.width, args.height)
     BITRATE = 10000000
     FORMAT = "RGB888"
     VIDEO_FILE_EXT = "mp4"
 
-    UPLOAD_URL = "http://192.168.1.74:5000/upload"
+    SERVER_IP = args.server_ip
+    SERVER_PORT = args.server_port
+    UPLOAD_URL = f"http://{SERVER_IP}:{SERVER_PORT}/upload"
     VIDEO_FOLDER = "videos"
     CONN_TIMEOUT = 5

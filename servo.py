@@ -13,17 +13,16 @@ class Servo:
         self.pwm.start(0)
         
         self.cover_opened = False
+        
+    def cleanup(self):
+        self.pwm.stop()
+        GPIO.cleanup()
 
     def set_angle(self, angle):
         duty_cycle = 2 + (angle / 18)
         self.pwm.ChangeDutyCycle(duty_cycle)
         time.sleep(0.5)
         self.pwm.ChangeDutyCycle(0)
-
-    def cleanup(self):
-        pass
-        self.pwm.stop()
-        GPIO.cleanup()
 
     def open_cover(self):
         self.set_angle(Config.OPEN_ANGLE)
