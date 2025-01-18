@@ -1,0 +1,6 @@
+mediapipe==0.10.20
+numpy==2.2.1
+opencv_python==4.10.0.84
+picamera2==0.3.24
+Requests==2.32.3
+tflite_runtime==2.14.0

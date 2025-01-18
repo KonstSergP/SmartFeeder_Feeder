@@ -16,7 +16,7 @@ class VideoStorage:
     
     def cleanup(self):
         while self.lock.locked(): pass
-            
+
     
     def get_new_video_name(self):
         path = os.path.join(Config.VIDEO_FOLDER, f"{self.last_id}.{Config.VIDEO_FILE_EXT}")
