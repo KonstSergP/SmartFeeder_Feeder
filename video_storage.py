@@ -7,7 +7,6 @@ from config import *
 class VideoStorage:
 
     def __init__(self, server_conn=None):
-        
         if not os.path.exists(Config.VIDEO_FOLDER):
             os.makedirs(Config.VIDEO_FOLDER)
         
@@ -30,8 +29,8 @@ class VideoStorage:
     def send_to_server(self):
         if self.server_conn is None or self.lock.locked():
             return
-        if not self.server_conn.connected():
-            log.info("server is not reachable, sending stopped")
+        if not self.server_conn.connected:
+            log.info("No connection to server, sending stopped")
             return
 
         with self.lock:

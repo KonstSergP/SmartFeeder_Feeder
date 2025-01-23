@@ -17,19 +17,21 @@ class ServerConnection():
         self._socketio.on("stream start",   self._on_stream_start)
         self._socketio.on("stream end",     self._on_stream_end)
 
+    @property
     def connected(self):
         return self._socketio.connected
 
     def _on_connection(self):
         pass
 
-    def _on_disconnection(self):
-        pass
+    def _on_disconnection(self, reason):
+        log.error(f"Disconnected: {reason}")
     
-    def _on_stream_start(self):
+    def _on_stream_start(self, data):
         if self.stream_start_handler is not None:
-            self.stream_start_handler()
-    
+            self.stream_start_handler(data["port"], data["path"])
+        #self._socketio.emit("stream started")
+
     def _on_stream_end(self):
         if self.stream_end_handler is not None:
             self.stream_end_handler()
