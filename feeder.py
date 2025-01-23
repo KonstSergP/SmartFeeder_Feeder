@@ -6,14 +6,17 @@ from squirrel_detection import SquirrelDetector
 from hands_detection import HandsDetector
 from servo import Servo
 from video_storage import VideoStorage
+from server_connection import ServerConnection
+
 from config import *
 
 
 class SmartFeeder:
     def __init__(self):
-        self.camera     = Camera()
-        self.servo      = Servo()
-        self.storage    = VideoStorage()
+        self.camera      = Camera()
+        self.servo       = Servo()
+        self.server_conn = ServerConnection()
+        self.storage     = VideoStorage(self.server_conn)
         self.squirrel_detector  = SquirrelDetector()
         self.hands_detector     = HandsDetector()
         log.info("Smart feeder init")
@@ -37,8 +40,7 @@ class SmartFeeder:
         if not self.squirrel_detector.detect(self.camera.get_frame()):
             self.camera.stop_capture()
             self.servo.close_cover()
-            self.storage.go_to_next_name()
-            threading.Thread(target=self.storage.send_to_server, daemon=True).start()
+            self.storage.go_to_next_video()
         else:
             log.info("Capture continues")
             time.sleep(Config.SLEEP_TIME)
@@ -57,9 +59,5 @@ class SmartFeeder:
 
         elif self.squirrel_detector.detect(self.camera.get_frame()):
             self.servo.open_cover()
-            threading.Thread(
-                target=self.camera.capture_video,
-                args=[self.storage.get_new_video_name()],
-                daemon=True,
-            ).start()
+            self.camera.capture_video(self.storage.get_new_video_name())
             time.sleep(Config.SLEEP_TIME)
