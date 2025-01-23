@@ -25,7 +25,7 @@ class VideoStorage:
 
     def go_to_next_video(self):
         self.last_id += 1
-        threading.Thread(target=self.storage.send_to_server, daemon=True).start()
+        threading.Thread(target=self.send_to_server, daemon=True).start()
 
     def send_to_server(self):
         if self.server_conn is None or self.lock.locked():

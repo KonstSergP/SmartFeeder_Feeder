@@ -11,7 +11,7 @@ class Camera:
         except:
             log.error("Can\'t turn on camera", exc_info=True)
             exit(1)
-        self._picam.configure(self.picam.create_video_configuration(
+        self._picam.configure(self._picam.create_video_configuration(
                     main={"size":   Config.FRAME_SIZE,
                           "format": Config.FORMAT}
                     ))
@@ -20,12 +20,16 @@ class Camera:
         self._capture_encoder = H264Encoder(bitrate=Config.BITRATE)
         self._stream_encoder  = H264Encoder(bitrate=Config.BITRATE)
     
+    @property
+    def capturing(self):
+        return self._capture_encoder.running
+    
     def cleanup(self):
         if self._capture_encoder.running:
             self.stop_capture()
 
     def get_frame(self):
-        return self.picam.capture_array()
+        return self._picam.capture_array()
 
     def capture_video(self, video_name):
         self._capture_encoder.output = FfmpegOutput(video_name)
