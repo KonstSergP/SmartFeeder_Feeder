@@ -1,1 +1,1 @@
-from detectors_handler import DetectorsHandler
+from .detectors_handler import DetectorsHandler

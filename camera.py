@@ -13,13 +13,13 @@ class Camera:
             exit(1)
         self._picam.configure(self._picam.create_video_configuration(
                     main={"size":   Config.FRAME_SIZE,
-                          "format": Config.FORMAT,
-                          "FrameDurationLimits": (50000, 50000)}
+                          "format": Config.FORMAT}, controls=
+                          { "FrameDurationLimits": (50000, 50000)}
                     ))
         self._picam.start()
 
-        self._capture_encoder = H264Encoder(bitrate=Config.BITRATE, audio=True)
-        self._stream_encoder  = H264Encoder(bitrate=Config.BITRATE, audio=True)
+        self._capture_encoder = H264Encoder(bitrate=Config.BITRATE)
+        self._stream_encoder  = H264Encoder(bitrate=Config.BITRATE)
 
     @property
     def capturing(self):
@@ -40,7 +40,7 @@ class Camera:
         return self._picam.capture_array()
 
     def capture_video(self, video_name):
-        self._capture_encoder.output = FfmpegOutput(video_name)
+        self._capture_encoder.output = FfmpegOutput(video_name, audio=True)
         self._picam.start_encoder(self._capture_encoder)
         log.info("Capture started")
 
@@ -51,7 +51,7 @@ class Camera:
         log.info("Capture stopped")
 
     def start_stream(self, port, path):
-        self._stream_encoder.output = FfmpegOutput(f"-f rtp_mpegts rtp://{Config.SERVER_IP}:{port}/{path}")
+        self._stream_encoder.output = FfmpegOutput(f"-f rtp_mpegts rtp://{Config.SERVER_IP}:{port}/{path}", audio=True)
         self._picam.start_encoder(self._stream_encoder)
         log.info(f"Stream started: rtp://{Config.SERVER_IP}:{port}/{path}")
 

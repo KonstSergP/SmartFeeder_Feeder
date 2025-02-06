@@ -1,5 +1,5 @@
-from hands_detection import HandsDetector
-from squirrel_detection import SquirrelDetector
+from .hands_detection import HandsDetector
+from .squirrel_detection import SquirrelDetector
 
 
 class DetectorsHandler:

@@ -16,6 +16,7 @@ class ServerConnection():
         self._socketio.on("stream end",     self._on_stream_end)
 
         self._socketio.connect(f"http://{Config.SERVER_IP}:{Config.SERVER_PORT}")
+        log.info("Connected to server")
 
     @property
     def connected(self):
