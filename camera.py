@@ -4,6 +4,7 @@ from picamera2.outputs import FfmpegOutput
 
 from config import *
 
+
 class Camera:
     def __init__(self):
         try:
@@ -12,9 +13,11 @@ class Camera:
             log.error("Can\'t turn on camera", exc_info=True)
             exit(1)
         self._picam.configure(self._picam.create_video_configuration(
-                    main={"size":   Config.FRAME_SIZE,
-                          "format": Config.FORMAT}, controls=
-                          { "FrameDurationLimits": (50000, 50000)}
+                    main={
+                        "size":   Config.FRAME_SIZE,
+                        "format": Config.FORMAT},
+                    controls={
+                        "FrameDurationLimits": (50000, 50000)}
                     ))
         self._picam.start()
 

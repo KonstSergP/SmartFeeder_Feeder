@@ -15,7 +15,8 @@ class ServerConnection():
         self._socketio.on("stream start",   self._on_stream_start)
         self._socketio.on("stream end",     self._on_stream_end)
 
-        self._socketio.connect(f"http://{Config.SERVER_IP}:{Config.SERVER_PORT}")
+        self._socketio.connect(f"http://{Config.SERVER_IP}:{Config.SERVER_PORT}",
+                               headers={"id": "TEST"})
         log.info("Connected to server")
 
     @property
