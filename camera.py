@@ -13,12 +13,13 @@ class Camera:
             exit(1)
         self._picam.configure(self._picam.create_video_configuration(
                     main={"size":   Config.FRAME_SIZE,
-                          "format": Config.FORMAT}
+                          "format": Config.FORMAT,
+                          "FrameDurationLimits": (50000, 50000)}
                     ))
         self._picam.start()
 
-        self._capture_encoder = H264Encoder(bitrate=Config.BITRATE)
-        self._stream_encoder  = H264Encoder(bitrate=Config.BITRATE)
+        self._capture_encoder = H264Encoder(bitrate=Config.BITRATE, audio=True)
+        self._stream_encoder  = H264Encoder(bitrate=Config.BITRATE, audio=True)
 
     @property
     def capturing(self):
@@ -52,7 +53,7 @@ class Camera:
     def start_stream(self, port, path):
         self._stream_encoder.output = FfmpegOutput(f"-f rtp_mpegts rtp://{Config.SERVER_IP}:{port}/{path}")
         self._picam.start_encoder(self._stream_encoder)
-        log.info("Stream started")
+        log.info(f"Stream started: rtp://{Config.SERVER_IP}:{port}/{path}")
 
     def stop_stream(self):
         if not self.streaming:
