@@ -16,7 +16,10 @@ class ServerConnection():
         self._socketio.on("stream end",     self._on_stream_end)
 
         self._socketio.connect(f"http://{Config.SERVER_IP}:{Config.SERVER_PORT}",
-                               headers={"id": "TEST"})
+                               headers={
+                                        "type": "feeder",
+                                        "id":   "TEST"
+                                        })
         log.info("Connected to server")
 
     @property
@@ -28,7 +31,7 @@ class ServerConnection():
 
     def _on_disconnection(self, reason):
         log.error(f"Disconnected: {reason}")
-    
+
     def _on_stream_start(self, data):
         if self.stream_start_handler is not None:
             self.stream_start_handler(data["port"], data["path"])
@@ -37,3 +40,4 @@ class ServerConnection():
     def _on_stream_end(self):
         if self.stream_end_handler is not None:
             self.stream_end_handler()
+        return "stream ended"
