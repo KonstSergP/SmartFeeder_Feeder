@@ -1,58 +1,64 @@
+from .config import settings
 import argparse
-import os
+
 
 parser = argparse.ArgumentParser(description='Use arguments to change programm parameters')
 
 parser.add_argument(
     '--smp',
-    type=str, default=os.path.join("squirrel_model", "detect.tflite"),
-    help='path to squirrel detection .tflite model'
+    type=str, default=settings.squirrel_model_path,
+    help='path to squirrel detection .tflite model',
+    dest="squirrel_model_path"
 )
 
 parser.add_argument(
     '--slp',
-    type=str, default=os.path.join("squirrel_model", "labelmap.txt"),
-    help='path to squirrel detection model labelmap'
+    type=str, default=settings.squirrel_labelmap_path,
+    help='path to squirrel detection model labelmap',
+    dest="squirrel_labelmap_path"
 )
 
 parser.add_argument(
     '--min-conf-threshhold',
-    type=float, default=0.9,
+    type=float, default=settings.min_cong_threshhold,
     help='minimum confidence threshhold for squirrel detection model'
 )
 
 parser.add_argument(
     '--servo-pin',
-    type=int, default=14,
+    type=int, default=settings.servo_pin,
     help='number of pin that connected with servo'
 )
 
 parser.add_argument(
     '--server-ip',
-    type=str, default="192.168.1.74",
+    type=str, default=settings.server_ip,
     help='ip address of server'
 )
 
 parser.add_argument(
     '--server-port',
-    type=int, default=5000,
+    type=int, default=settings.server_port,
     help='server port'
 )
 
 parser.add_argument(
     '--width',
-    type=int, default=640,
+    type=int, default=settings.width,
     help='width of video frame'
 )
 
 parser.add_argument(
     '--height',
-    type=int, default=480,
+    type=int, default=settings.height,
     help='height of video frame'
 )
 
 parser.add_argument(
-    "--debug", default=False, action="store_true",
-    help="Enable debug mode")
+    "--log-level", default=settings.log_level,
+    help="Change log level")
 
 args = parser.parse_args()
+
+def update_config():
+    settings.update(vars(args))

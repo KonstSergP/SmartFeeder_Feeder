@@ -1,11 +1,12 @@
 import RPi.GPIO as GPIO
 import time
 
-from config import *
+from settings.config import *
+
 
 class Servo:
     def __init__(self):
-        self.pin = Config.SERVO_PIN
+        self.pin = settings.servo_pin
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
         
@@ -13,10 +14,12 @@ class Servo:
         self.pwm.start(0)
         
         self.cover_opened = False
-        
+
+ 
     def cleanup(self):
         self.pwm.stop()
         GPIO.cleanup()
+
 
     def set_angle(self, angle):
         duty_cycle = 2 + (angle / 18)
@@ -24,12 +27,14 @@ class Servo:
         time.sleep(0.5)
         self.pwm.ChangeDutyCycle(0)
 
+
     def open_cover(self):
-        self.set_angle(Config.OPEN_ANGLE)
+        self.set_angle(settings.open_angle)
         self.cover_opened = True
         log.info("Cover opened")
-    
+
+
     def close_cover(self):
-        self.set_angle(Config.CLOSE_ANGLE)
+        self.set_angle(settings.close_angle)
         self.cover_opened = False
         log.info("Cover closed")

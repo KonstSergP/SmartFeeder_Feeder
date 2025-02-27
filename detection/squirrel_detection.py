@@ -2,11 +2,11 @@ import tflite_runtime.interpreter as tflite
 import cv2
 import numpy as np
 
-from config import *
+from settings.config import *
 
 class SquirrelDetector:
     def __init__(self):
-        self.interpreter = tflite.Interpreter(model_path=Config.SQUIRREL_MODEL_PATH)
+        self.interpreter = tflite.Interpreter(model_path=settings.squirrel_model_path)
         self.interpreter.allocate_tensors()
         
         input_details = self.interpreter.get_input_details()
@@ -17,8 +17,9 @@ class SquirrelDetector:
         self.classes_index = output_details[1]['index']
         self.scores_index = output_details[2]['index']
         
-        with open(Config.SQUIRREL_LABELS_PATH, 'r') as f:
+        with open(settings.squirrel_labels_path, 'r') as f:
             self.labels = [line.strip() for line in f.readlines()]
+
 
     def detect(self, frame1):
         frame = frame1.copy()
@@ -41,17 +42,17 @@ class SquirrelDetector:
         found = False
         for i in range(len(scores)):
 
-            if ((scores[i] > Config.MIN_CONF_THRESHHOLD) and (scores[i] <= 1.0)):
+            if ((scores[i] > settings.min_conf_threshhold) and (scores[i] <= 1.0)):
                 if (self.labels[int(classes[i])]) == "squirrel": found = True
                 # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
 
-                ymin = int(max(1,(boxes[i][0] * Config.FRAME_SIZE[1])))
+                ymin = int(max(1,(boxes[i][0] * settings.frame_size[1])))
 
-                xmin = int(max(1,(boxes[i][1] * Config.FRAME_SIZE[0])))
+                xmin = int(max(1,(boxes[i][1] * settings.frame_size[0])))
 
-                ymax = int(min(Config.FRAME_SIZE[1],(boxes[i][2] * Config.FRAME_SIZE[1])))
+                ymax = int(min(settings.frame_size[1],(boxes[i][2] * settings.frame_size[1])))
 
-                xmax = int(min(Config.FRAME_SIZE[0],(boxes[i][3] * Config.FRAME_SIZE[0])))
+                xmax = int(min(settings.frame_size[0],(boxes[i][3] * settings.frame_size[0])))
                 
                 cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
 

@@ -6,7 +6,7 @@ from servo import Servo
 from video_storage import VideoStorage
 from server_connection import ServerConnection
 
-from config import *
+from settings.config import *
 
 
 class SmartFeeder:
@@ -18,10 +18,12 @@ class SmartFeeder:
         self.detectors   = DetectorsHandler()
         log.info("Smart feeder init")
 
+
     def cleanup(self):
         self.camera.cleanup()
         self.servo.cleanup()
         self.storage.cleanup()
+
 
     def work(self):
         while True:
@@ -35,6 +37,7 @@ class SmartFeeder:
             else:
                 self._handle_cover_closed()
 
+
     def _handle_capture(self):
         if not self.detectors.detect_squirrel():
             self.camera.stop_capture()
@@ -42,21 +45,23 @@ class SmartFeeder:
             self.storage.go_to_next_video()
         else:
             log.info("Capture continues")
-            time.sleep(Config.SLEEP_TIME)
+            time.sleep(settings.sleep_time)
+
 
     def _handle_cover_opened(self):
         if not self.detectors.detect_hands():
             self.servo.close_cover()
         else:
             log.info("Cover is still open")
-            time.sleep(Config.SLEEP_TIME)
+            time.sleep(settings.sleep_time)
+
 
     def _handle_cover_closed(self):
         if self.detectors.detect_hands():
             self.servo.open_cover()
-            time.sleep(Config.SLEEP_TIME)
+            time.sleep(settings.sleep_time)
 
         elif self.detectors.detect_squirrel():
             self.servo.open_cover()
             self.camera.capture_video(self.storage.get_new_video_name())
-            time.sleep(Config.SLEEP_TIME)
+            time.sleep(settings.sleep_time)

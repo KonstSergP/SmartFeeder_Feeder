@@ -2,7 +2,7 @@ from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 from picamera2_fix import CaptureAndStreamOutput
 
-from config import *
+from settings.config import *
 
 
 class Camera:
@@ -14,23 +14,26 @@ class Camera:
             exit(1)
         self._picam.configure(self._picam.create_video_configuration(
                     main={
-                        "size":   Config.FRAME_SIZE,
-                        "format": Config.FORMAT},
+                        "size":   settings.frame_size,
+                        "format": settings.format},
                     controls={
                         "FrameDurationLimits": (50000, 50000)}
                     ))
         self._picam.start()
 
-        self._capture_encoder = H264Encoder(bitrate=Config.BITRATE)
-        self._stream_encoder  = H264Encoder(bitrate=Config.BITRATE)
+        self._capture_encoder = H264Encoder(bitrate=settings.bitrate)
+        self._stream_encoder  = H264Encoder(bitrate=settings.bitrate)
+
 
     @property
     def capturing(self):
         return self._capture_encoder.running
-    
+
+
     @property
     def streaming(self):
         return self._stream_encoder.running
+
 
     def cleanup(self):
         if self.capturing:
@@ -39,13 +42,16 @@ class Camera:
             self.stop_stream()
         self._picam.stop()
 
+
     def get_frame(self):
         return self._picam.capture_array()
+
 
     def capture_video(self, video_name):
         self._capture_encoder.output = CaptureAndStreamOutput(video_name, audio=True)
         self._picam.start_encoder(self._capture_encoder)
         log.info("Capture started")
+
 
     def stop_capture(self):
         if not self.capturing:
@@ -53,10 +59,12 @@ class Camera:
         self._picam.stop_encoder(self._capture_encoder)
         log.info("Capture stopped")
 
+
     def start_stream(self, port, path):
-        self._stream_encoder.output = CaptureAndStreamOutput(f"-f rtp_mpegts rtp://{Config.SERVER_IP}:{port}/{path}", audio=True)
+        self._stream_encoder.output = CaptureAndStreamOutput(f"-f rtp_mpegts rtp://{settings.server_ip}:{port}/{path}", audio=True)
         self._picam.start_encoder(self._stream_encoder)
-        log.info(f"Stream started: rtp://{Config.SERVER_IP}:{port}/{path}")
+        log.info(f"Stream started: rtp://{settings.server_ip}:{port}/{path}")
+
 
     def stop_stream(self):
         if not self.streaming:
