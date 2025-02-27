@@ -70,3 +70,26 @@ class SquirrelDetector:
         cv2.imshow('Object detector', frame)
         cv2.waitKey(1)
         return found
+
+
+class MyDetector:
+    def __init__(self):
+        self.interpreter = tflite.Interpreter(model_path=settings.my_squirrel_model_path)
+        self.interpreter.allocate_tensors()
+
+        self.input_details = self.interpreter.get_input_details()
+        self.output_details = self.interpreter.get_output_details()
+
+    def detect(self, frame):
+        frame_resized = cv2.resize(frame, (224, 224)) / 255.0
+        img_array = np.expand_dims(frame_resized, axis=0).astype(np.float32) 
+        
+        self.interpreter.set_tensor(self.input_details[0]['index'], img_array)
+        self.interpreter.invoke()
+        prediction = self.interpreter.get_tensor(self.output_details[0]['index'])
+        
+        class_index = np.argmax(prediction)
+        confidence = prediction[0][class_index]
+        
+        log.debug(f"Confidence: {confidence}")
+        return confidence > 0.9

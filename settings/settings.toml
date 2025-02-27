@@ -2,6 +2,7 @@
 log_level = "INFO"
 log_format = "%(asctime)s - %(levelname)s - %(message)s"
 
+my_squirrel_model_path = "./squirrel_model/modelv3.1.tflite"
 squirrel_model_path = "./squirrel_model/detect.tflite"
 squirrel_labels_path = "./squirrel_model/labelmap.txt"
 
