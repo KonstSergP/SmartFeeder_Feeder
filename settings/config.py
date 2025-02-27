@@ -1,4 +1,3 @@
-from settings.argument_parser import *
 import logging
 import sys
 from dynaconf import Dynaconf
@@ -8,7 +7,7 @@ settings = Dynaconf(
     settings_files=["./settings/settings.toml"]
 )
 
-from argument_parser import update_config
+from .argument_parser import update_config
 update_config()
 
 

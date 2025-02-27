@@ -1,8 +1,9 @@
 
 log_level = "INFO"
+log_format = "%(asctime)s - %(levelname)s - %(message)s"
 
 squirrel_model_path = "./squirrel_model/detect.tflite"
-squirrel_labelmap_path = "./squirrel_model/labelmap.txt"
+squirrel_labels_path = "./squirrel_model/labelmap.txt"
 
 min_conf_threshhold = 0.9
 
@@ -14,7 +15,8 @@ server_ip = "192.168.1.74"
 server_port = 5000
 connection_timeout = 5
 
-frame_size = [640, 480]
+width = 640
+height = 480
 
 sleep_time = 5
 

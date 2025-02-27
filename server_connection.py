@@ -13,7 +13,7 @@ class ServerConnection():
         self._socketio.on("connect",        self._on_connection)
         self._socketio.on("disconnect",     self._on_disconnection)
         self._socketio.on("stream start",   self._on_stream_start)
-        self._socketio.on("stream stop",     self._on_stream_stop)
+        self._socketio.on("stream stop",    self._on_stream_stop)
 
         self._socketio.connect(f"http://{settings.server_ip}:{settings.server_port}",
                                headers={
@@ -42,7 +42,7 @@ class ServerConnection():
         return "stream started"
 
 
-    def _on_stream_srop(self):
+    def _on_stream_stop(self):
         if self.stream_stop_handler is not None:
             self.stream_stop_handler()
         return "stream stopped"

@@ -46,13 +46,13 @@ class SquirrelDetector:
                 if (self.labels[int(classes[i])]) == "squirrel": found = True
                 # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
 
-                ymin = int(max(1,(boxes[i][0] * settings.frame_size[1])))
+                ymin = int(max(1,(boxes[i][0] * settings.height)))
 
-                xmin = int(max(1,(boxes[i][1] * settings.frame_size[0])))
+                xmin = int(max(1,(boxes[i][1] * settings.width)))
 
-                ymax = int(min(settings.frame_size[1],(boxes[i][2] * settings.frame_size[1])))
+                ymax = int(min(settings.height,(boxes[i][2] * settings.height)))
 
-                xmax = int(min(settings.frame_size[0],(boxes[i][3] * settings.frame_size[0])))
+                xmax = int(min(settings.width,(boxes[i][3] * settings.width)))
                 
                 cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
 

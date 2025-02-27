@@ -45,7 +45,8 @@ class VideoStorage:
                     try:
                         with open(os.path.join(settings.video_folder, filename), "rb") as f:
                             files={"video": f}
-                            r = requests.post(f"http://{settings.server_ip}:{settings.server_port}/upload", files=files, timeout=settings.conn_timeout)
+                            r = requests.post(f"http://{settings.server_ip}:{settings.server_port}/upload", files=files, timeout=settings.connection_timeout,
+                                                headers={"id": "TEST"})
                             if r.status_code == 200:
                                 video_sent = True
                                 log.info(f"Video {filename} sent")

@@ -1,6 +1,6 @@
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
-from picamera2_fix import CaptureAndStreamOutput
+from picamera2_fix.CaptureAndStreamOutput import CaptureAndStreamOutput
 
 from settings.config import *
 
@@ -14,7 +14,7 @@ class Camera:
             exit(1)
         self._picam.configure(self._picam.create_video_configuration(
                     main={
-                        "size":   settings.frame_size,
+                        "size":   [settings.width, settings.height],
                         "format": settings.format},
                     controls={
                         "FrameDurationLimits": (50000, 50000)}

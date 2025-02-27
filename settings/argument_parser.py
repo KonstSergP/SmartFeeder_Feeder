@@ -13,14 +13,14 @@ parser.add_argument(
 
 parser.add_argument(
     '--slp',
-    type=str, default=settings.squirrel_labelmap_path,
+    type=str, default=settings.squirrel_labels_path,
     help='path to squirrel detection model labelmap',
     dest="squirrel_labelmap_path"
 )
 
 parser.add_argument(
     '--min-conf-threshhold',
-    type=float, default=settings.min_cong_threshhold,
+    type=float, default=settings.min_conf_threshhold,
     help='minimum confidence threshhold for squirrel detection model'
 )
 
