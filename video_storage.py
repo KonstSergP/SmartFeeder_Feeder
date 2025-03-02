@@ -6,13 +6,13 @@ from settings.config import *
 
 class VideoStorage:
 
-    def __init__(self, server_conn=None):
+    def __init__(self, server_connection=None):
         if not os.path.exists(settings.video_folder):
             os.makedirs(settings.video_folder)
         
         self.last_id = 0
         self.lock = threading.Lock()
-        self.server_conn = server_conn
+        self.server_connection = server_connection
 
 
     def cleanup(self):
@@ -30,9 +30,9 @@ class VideoStorage:
 
 
     def send_to_server(self):
-        if self.server_conn is None or self.lock.locked():
+        if self.server_connection is None or self.lock.locked():
             return
-        if not self.server_conn.connected:
+        if not self.server_connection.connected:
             log.info("No connection to server, sending stopped")
             return
 
