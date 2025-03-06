@@ -2,27 +2,38 @@
 log_level = "INFO"
 log_format = "%(asctime)s - %(levelname)s - %(message)s"
 
+
 my_squirrel_model_path = "./squirrel_model/modelv3.1.tflite"
 squirrel_model_path = "./squirrel_model/detect.tflite"
 squirrel_labels_path = "./squirrel_model/labelmap.txt"
 
+
 min_conf_threshhold = 0.9
+
 
 servo_pin = 14
 open_angle = 90
 close_angle = 0
 
+
 server_ip = "192.168.1.74"
 server_port = 5000
 connection_timeout = 5
+online_mode = true
+
+client_type = "feeder"
+
 
 width = 640
 height = 480
 
+
 sleep_time = 5
+
 
 bitrate = 10000000
 format = "RGB888"
 video_file_ext = "mp4"
+
 
 VIDEO_FOLDER = "videos"

@@ -43,6 +43,14 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '--no-server',
+    default=settings.online_mode,
+    action='store_false',
+    help='enable offline mode',
+    dest='online_mode'
+)
+
+parser.add_argument(
     '--width',
     type=int, default=settings.width,
     help='width of video frame'

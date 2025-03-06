@@ -4,6 +4,7 @@ import requests
 
 from settings.config import *
 
+
 class VideoStorage:
 
     def __init__(self, server_connection=None):
