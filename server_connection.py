@@ -34,7 +34,7 @@ class ServerConnection():
             self._socketio.connect(f"http://{settings.server_ip}:{settings.server_port}",
                                 headers={
                                             "type": settings.client_type,
-                                            "id":   "TEST"
+                                            "id":   settings.feeder_id
                                             },
                                 retry=True)
         except:
@@ -60,13 +60,13 @@ class ServerConnection():
 
     def _on_stream_start(self, data):
         if self.stream_start_handler is not None:
-            self.stream_start_handler(data["port"], data["path"])
-            return "stream started"
-        return "no stream start handler"
+            self.stream_start_handler(data["port"], settings.feeder_id)
+            return {"success": True}
+        return {"success": False, "Error": "no stream start handler"}
 
 
     def _on_stream_stop(self):
         if self.stream_stop_handler is not None:
             self.stream_stop_handler()
-            return "stream stopped"
-        return "no stream stop handler"
+            return {"success": True}
+        return {"success": False, "Error": "no stream stop handler"}

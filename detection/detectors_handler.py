@@ -4,8 +4,8 @@ from .squirrel_detection import SquirrelDetector, MyDetector
 
 class DetectorsHandler:
     def __init__(self):
-        #self._squirrel_detector = SquirrelDetector()
-        self._squirrel_detector = MyDetector()
+        self._squirrel_detector = SquirrelDetector()
+        #self._squirrel_detector = MyDetector()
         self._hands_detector    = HandsDetector()
         self._frame = None
 

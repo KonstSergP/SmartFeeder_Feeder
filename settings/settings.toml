@@ -22,6 +22,7 @@ connection_timeout = 5
 online_mode = true
 
 client_type = "feeder"
+feeder_id = "TEST"
 
 
 width = 640
