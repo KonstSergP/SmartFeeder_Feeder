@@ -31,6 +31,12 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '--servo-speed',
+    type=int, default=settings.servo_speed,
+    help='speed of servo motor in percents'
+)
+
+parser.add_argument(
     '--server-ip',
     type=str, default=settings.server_ip,
     help='ip address of server'
@@ -40,6 +46,13 @@ parser.add_argument(
     '--server-port',
     type=int, default=settings.server_port,
     help='server port'
+)
+
+parser.add_argument(
+    '--reset-id',
+    default=False,
+    action='store_true',
+    help='reset saved feeder id to ask new from server',
 )
 
 parser.add_argument(

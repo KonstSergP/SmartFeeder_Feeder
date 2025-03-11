@@ -10,7 +10,7 @@ class VideoStorage:
     def __init__(self, server_connection=None):
         if not os.path.exists(settings.video_folder):
             os.makedirs(settings.video_folder)
-        
+
         self.last_id = 0
         self.lock = threading.Lock()
         self.server_connection = server_connection
@@ -45,9 +45,12 @@ class VideoStorage:
                     video_sent = False
                     try:
                         with open(os.path.join(settings.video_folder, filename), "rb") as f:
+                            feeder_id = self.server_connection.feeder_id
                             files={"video": f}
-                            r = requests.post(f"http://{settings.server_ip}:{settings.server_port}/upload", files=files, timeout=settings.connection_timeout,
-                                                headers={"id": "TEST"})
+                            r = requests.post(f"http://{settings.server_ip}:{settings.server_port}/upload",
+                                                files=files,
+                                                timeout=settings.connection_timeout,
+                                                headers={"id": feeder_id})
                             if r.status_code == 200:
                                 video_sent = True
                                 log.info(f"Video {filename} sent")

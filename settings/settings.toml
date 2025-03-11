@@ -12,6 +12,7 @@ min_conf_threshhold = 0.9
 
 
 servo_pin = 14
+servo_speed = 100 # percents
 open_angle = 90
 close_angle = 0
 

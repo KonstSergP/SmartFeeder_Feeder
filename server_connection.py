@@ -13,8 +13,14 @@ class ServerConnection():
         self._socketio = socketio.Client(logger=log,
                                     reconnection_delay=1,
                                     reconnection_delay_max=16)
+        
+        self.init_connection_parameters()
 
         self.handle_socketio_connection()
+
+
+    def init_connection_parameters(self):
+        self.feeder_id = get_feeder_id()
 
 
     def handle_socketio_connection(self):
@@ -23,6 +29,7 @@ class ServerConnection():
             self._socketio.on("disconnect",     self._on_disconnection)
             self._socketio.on("stream start",   self._on_stream_start)
             self._socketio.on("stream stop",    self._on_stream_stop)
+            self._socketio.on("assign id",      self._on_assigning_id)
             log.info("Attached socketio handlers")
             threading.Thread(target=self._connect_to_server, daemon=True).start()
         else:
@@ -30,17 +37,25 @@ class ServerConnection():
 
 
     def _connect_to_server(self):
+        auth = {
+            "type": settings.client_type,
+        }
+        if self.feeder_id is not None:
+            auth["id"] = self.feeder_id
+        else:
+            auth["need id"] = "true"
+
         try:
             self._socketio.connect(f"http://{settings.server_ip}:{settings.server_port}",
-                                headers={
-                                            "type": settings.client_type,
-                                            "id":   settings.feeder_id
-                                            },
+                                auth=auth,
                                 retry=True)
         except:
             log.error("Can\'t connect to server", exc_info=True)
             return
         log.info("Connected to server")
+        if "need id" in auth:
+            self._socketio.disconnect()
+            self._connect_to_server() # to change "need id" -> "id"
 
 
     @property
@@ -70,3 +85,9 @@ class ServerConnection():
             self.stream_stop_handler()
             return {"success": True}
         return {"success": False, "Error": "no stream stop handler"}
+
+
+    def _on_assigning_id(self, data):
+        self.feeder_id = data["id"]
+        set_feeder_id(self.feeder_id)
+        log.info(f"Assigned new id: {self.feeder_id}")
