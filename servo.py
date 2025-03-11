@@ -7,7 +7,9 @@ from settings.config import *
 class Servo:
     def __init__(self):
         self.pin = settings.servo_pin
-        self.speed = settings.servo_speed
+        
+        speed = {"slow": 15, "medium": 40, "fast": 75}
+        self.speed = speed[settings.servo_speed]
         self.angle = None
         self.cover_opened = None
         GPIO.setmode(GPIO.BCM)
@@ -29,15 +31,15 @@ class Servo:
             duty_cycle = 2 + (angle / 18)
             self.pwm.ChangeDutyCycle(duty_cycle)
             sleep(0.5)
+            self.angle = angle
         else:
             duty_cycle = 2 + (self.angle / 18)
-            duty_cycle_step = (angle - self.angle) / 18
-            for i in range(abs(angle - self.angle)):
-                duty_cycle += duty_cycle_step
-                self.pwm.ChangeDutyCycle(duty_cycle)
-                sleep((100 - self.speed) / (600*self.speed))
+            step = 1 if angle > self.angle else -1
+            while self.angle != angle:
+                self.pwm.ChangeDutyCycle(2 + (self.angle / 18))
+                sleep(1 / (4*self.speed))
+                self.angle += step
 
-        self.angle = angle
         self.pwm.ChangeDutyCycle(0)
 
 

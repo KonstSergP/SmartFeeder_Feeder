@@ -32,8 +32,9 @@ parser.add_argument(
 
 parser.add_argument(
     '--servo-speed',
-    type=int, default=settings.servo_speed,
-    help='speed of servo motor in percents'
+    type=str, default=settings.servo_speed,
+    choices=["slow", "medium", "fast"],
+    help='speed of servo motor slow/medium/fast'
 )
 
 parser.add_argument(

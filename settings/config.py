@@ -20,7 +20,7 @@ log.setLevel(settings.log_level)
 
 
 def get_feeder_id():
-    with shelve.open("./settings/connection_info.shv") as info:
+    with shelve.open("./settings/connection_info") as info:
         if "feeder_id" in info:
             if not settings.reset_id:
                 return info["feeder_id"]
@@ -30,7 +30,7 @@ def get_feeder_id():
 
 def set_feeder_id(feeder_id):
     try:
-        with shelve.open("./settings/connection_info.shv") as info:
+        with shelve.open("./settings/connection_info") as info:
             info["feeder_id"] = feeder_id
         log.info(f"Сохранен новый id: {feeder_id}")
     except Exception as e:
