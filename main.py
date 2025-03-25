@@ -22,7 +22,5 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
     # Register signal handler for SIGINT (Ctrl+C)
     signal.signal(signal.SIGINT, signal_handler)
-    # Also handle SIGTERM for proper shutdown when killed
-    signal.signal(signal.SIGTERM, signal_handler)
 
     feeder.work()

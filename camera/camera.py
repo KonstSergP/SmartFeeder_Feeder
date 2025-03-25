@@ -1,6 +1,6 @@
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
-from picamera2_fix.CaptureAndStreamOutput import CaptureAndStreamOutput
+from .picamera2_fix.CaptureAndStreamOutput import CaptureAndStreamOutput
 from .camera_mode_controller import CameraModeController
 
 
