@@ -14,13 +14,13 @@ class Servo:
         self.cover_opened = None
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
-        
+
         self.pwm = GPIO.PWM(self.pin, 50)
         self.pwm.start(0)
-        
+
         self.close_cover(True)
 
- 
+
     def cleanup(self):
         self.pwm.stop()
         GPIO.cleanup(self.pin)
