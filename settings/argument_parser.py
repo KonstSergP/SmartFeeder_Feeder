@@ -94,7 +94,7 @@ camera_mode_group.add_argument(
     dest='enable_camera_mode_control',
     help='disable camera mode control'
 )
-parser.set_defaults(type=settings.enable_camera_mode_control)
+parser.set_defaults(enable_camera_mode_control=settings.enable_camera_mode_control)
 
 
 parser.add_argument(

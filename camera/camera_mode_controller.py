@@ -6,8 +6,6 @@ class CameraModeController:
     """Controls camera day/night mode by managing the IR filter"""
     
     def __init__(self):
-        if not GPIO.getmode():
-            GPIO.setmode(GPIO.BCM) # we always use BCM to prevent conflicts
 
         self.camera_mode_pin = settings.camera_mode_pin
         self._current_state = None
@@ -25,14 +23,14 @@ class CameraModeController:
 
         elif settings.camera_mode == "day":
             self.set_mode("DAY")
-        elif settings.night_mode == "night":
+        elif settings.camera_mode == "night":
             self.set_mode("NIGHT")
 
         self.update_current_state()
 
 
     def update_current_state(self, channel=None):
-        self._current_state = "NIGHT" if self._pin_device.value else "DAY"
+        self._current_state = "DAY" if self._pin_device.value else "NIGHT"
         log.debug(f"Camera mode: {self._current_state}")
                
 

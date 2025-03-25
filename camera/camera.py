@@ -10,6 +10,7 @@ from settings.config import *
 class Camera:
     def __init__(self):
         self.camera_mode_controller = None
+
         if settings.enable_camera_mode_control:
             self.camera_mode_controller = CameraModeController()
 
