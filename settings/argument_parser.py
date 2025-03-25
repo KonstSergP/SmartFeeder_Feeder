@@ -80,6 +80,37 @@ parser.add_argument(
     "--log-level", default=settings.log_level,
     help="Change log level")
 
+
+camera_mode_group = parser.add_mutually_exclusive_group()
+camera_mode_group.add_argument(
+    '--enable-mode-control', 
+    action='store_true',
+    dest='enable_camera_mode_control',
+    help='enable camera mode control'
+)
+camera_mode_group.add_argument(
+    '--disable-mode-control', 
+    action='store_false',
+    dest='enable_camera_mode_control',
+    help='disable camera mode control'
+)
+parser.set_defaults(type=settings.enable_camera_mode_control)
+
+
+parser.add_argument(
+    '--camera-mode-pin',
+    type=int, default=settings.camera_mode_pin,
+    help='GPIO pin controlling IR filter',
+)
+
+parser.add_argument(
+    '--camera-mode',
+    type=str, default=settings.camera_mode,
+    choices=["auto", "day", "night"],
+    help='night mode: auto (light sensor), day, or night',
+)
+
+
 args = parser.parse_args()
 
 def update_config():

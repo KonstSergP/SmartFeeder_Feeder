@@ -1,12 +1,18 @@
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
 from picamera2_fix.CaptureAndStreamOutput import CaptureAndStreamOutput
+from .camera_mode_controller import CameraModeController
+
 
 from settings.config import *
 
 
 class Camera:
     def __init__(self):
+        self.camera_mode_controller = None
+        if settings.enable_camera_mode_control:
+            self.camera_mode_controller = CameraModeController()
+
         try:
             self._picam = Picamera2()
         except:
@@ -41,6 +47,8 @@ class Camera:
         if self.streaming:
             self.stop_stream()
         self._picam.stop()
+        if self.camera_mode_controller:
+            self.camera_mode_controller.cleanup()
 
 
     def get_frame(self):

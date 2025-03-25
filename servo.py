@@ -7,7 +7,7 @@ from settings.config import *
 class Servo:
     def __init__(self):
         self.pin = settings.servo_pin
-        
+
         speed = {"slow": 15, "medium": 40, "fast": 75}
         self.speed = speed[settings.servo_speed]
         self.angle = None
@@ -23,7 +23,7 @@ class Servo:
  
     def cleanup(self):
         self.pwm.stop()
-        GPIO.cleanup()
+        GPIO.cleanup(self.pin)
 
 
     def set_angle(self, angle, first=False):
