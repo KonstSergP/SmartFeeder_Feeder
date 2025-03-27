@@ -62,6 +62,12 @@ class ServerConnection():
             log.error("Can\'t connect to server", exc_info=True)
             return
         log.info("Connected to server")
+    
+    
+    def reconnect(self):
+        self._socketio.disconnect()
+        self._socketio.wait()
+        self._connect_to_server()
 
 
     @property
@@ -76,7 +82,7 @@ class ServerConnection():
     def _on_disconnection(self, reason):
         if self.stream_stop_handler is not None:
             self.stream_stop_handler()
-        log.error(f"Disconnected: {reason}")
+        log.info(f"Disconnected: {reason}")
 
 
     def _on_stream_start(self, data):
@@ -98,6 +104,4 @@ class ServerConnection():
         set_feeder_id(self.feeder_id)
         log.info(f"Assigned new id: {self.feeder_id}")
         
-        self._socketio.disconnect()
-        self._socketio.wait()
-        self._connect_to_server() # to change "need id" -> "id"
+        threading.Timer(1, self.reconnect).start()
