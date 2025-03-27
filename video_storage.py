@@ -47,7 +47,7 @@ class VideoStorage:
                         with open(os.path.join(settings.video_folder, filename), "rb") as f:
                             feeder_id = self.server_connection.feeder_id
                             files={"video": f}
-                            r = requests.post(f"http://{settings.server_ip}:{settings.server_port}/upload",
+                            r = requests.post(f"http://{get_socket_address()}/upload",
                                                 files=files,
                                                 timeout=settings.connection_timeout,
                                                 headers={"id": feeder_id})

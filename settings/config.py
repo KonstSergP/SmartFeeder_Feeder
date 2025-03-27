@@ -36,3 +36,9 @@ def set_feeder_id(feeder_id):
     except Exception as e:
         log.error(f"Ошибка сохранения id: {e}")
         raise RuntimeError("Ошибка сохранения id")
+
+
+def get_socket_address():
+    if settings.mode == "production":
+        return settings.server_host
+    return f"{settings.server_host}:{settings.server_port}"

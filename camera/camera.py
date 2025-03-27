@@ -70,9 +70,9 @@ class Camera:
 
 
     def start_stream(self, port, path):
-        self._stream_encoder.output = CaptureAndStreamOutput(f"-f rtp_mpegts rtp://{settings.server_ip}:{port}/{path}", audio=True)
+        self._stream_encoder.output = CaptureAndStreamOutput(f"-f rtp_mpegts rtp://{settings.server_host}:{port}/{path}", audio=True)
         self._picam.start_encoder(self._stream_encoder)
-        log.info(f"Stream started: rtp://{settings.server_ip}:{port}/{path}")
+        log.info(f"Stream started: rtp://{settings.server_host}:{port}/{path}")
 
 
     def stop_stream(self):

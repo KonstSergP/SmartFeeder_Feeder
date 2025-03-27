@@ -23,6 +23,7 @@ class SmartFeeder:
         self.camera.cleanup()
         self.servo.cleanup()
         self.storage.cleanup()
+        self.server_conn.cleanup()
 
 
     def work(self):

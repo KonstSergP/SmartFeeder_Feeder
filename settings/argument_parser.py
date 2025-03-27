@@ -38,9 +38,9 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    '--server-ip',
-    type=str, default=settings.server_ip,
-    help='ip address of server'
+    '--server-host',
+    type=str, default=settings.server_host,
+    help='ip address or domain name of server'
 )
 
 parser.add_argument(

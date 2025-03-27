@@ -4,7 +4,7 @@ from settings.config import *
 
 class CameraModeController:
     """Controls camera day/night mode by managing the IR filter"""
-    
+
     def __init__(self):
         if not GPIO.getmode():
             GPIO.setmode(GPIO.BCM) # we always use BCM to prevent conflicts
