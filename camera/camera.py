@@ -8,12 +8,20 @@ from settings.config import *
 
 
 class Camera:
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Manages the Raspberry Pi camera for video capture and streaming.\n
+        Handles both local video recording and remote streaming capabilities,
+        with support for day/night mode switching through the IR filter control.
+        Uses separate encoders for recording and streaming.
+        """
         self.camera_mode_controller = None
 
+        # Initialize day/night mode controller if it can be enabled
         if settings.enable_camera_mode_control:
             self.camera_mode_controller = CameraModeController()
 
+        # Initialize and configure camera using Picamera2 library
         try:
             self._picam = Picamera2()
         except:
@@ -33,16 +41,17 @@ class Camera:
 
 
     @property
-    def capturing(self):
+    def capturing(self) -> None:
         return self._capture_encoder.running
 
 
     @property
-    def streaming(self):
+    def streaming(self) -> None:
         return self._stream_encoder.running
 
 
-    def cleanup(self):
+    def cleanup(self) -> None:
+        """Release all camera resources."""
         if self.capturing:
             self.stop_capture()
         if self.streaming:
@@ -52,30 +61,43 @@ class Camera:
             self.camera_mode_controller.cleanup()
 
 
-    def get_frame(self):
+    def get_frame(self) -> None:
         return self._picam.capture_array()
 
 
-    def capture_video(self, video_name):
+    def capture_video(self, video_name: str) -> None:
+        """
+        Start capturing video to a local file.\n
+        Uses the CaptureAndStreamOutput which is a slightly adjusted FfmpegOutput
+        """
         self._capture_encoder.output = CaptureAndStreamOutput(video_name, audio=True)
         self._picam.start_encoder(self._capture_encoder)
         log.info("Capture started")
 
 
-    def stop_capture(self):
+    def stop_capture(self) -> None:
         if not self.capturing:
             return
         self._picam.stop_encoder(self._capture_encoder)
         log.info("Capture stopped")
 
 
-    def start_stream(self, port, path):
+    def start_stream(self, port: int, path: str) -> None:
+        """
+        Start streaming video to a remote server.\n
+        Uses RTP (Real-time Transport Protocol) to stream H264 encoded video
+        to the server.
+        Args:
+            port: Port number to stream to
+            path: Stream path
+        """
         self._stream_encoder.output = CaptureAndStreamOutput(f"-f rtp_mpegts rtp://{settings.server_host}:{port}/{path}", audio=True)
         self._picam.start_encoder(self._stream_encoder)
         log.info(f"Stream started: rtp://{settings.server_host}:{port}/{path}")
 
 
-    def stop_stream(self):
+    def stop_stream(self) -> None:
+        """Stop the current video stream if active, do nothing else"""
         if not self.streaming:
             return
         self._picam.stop_encoder(self._stream_encoder)

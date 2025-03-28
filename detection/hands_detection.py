@@ -5,11 +5,11 @@ handsModule = mediapipe.solutions.hands
 
 
 class HandsDetector:
-    def __init__(self):
+    def __init__(self) -> None:
         self.hands = handsModule.Hands(static_image_mode=False, min_detection_confidence=0.7, min_tracking_confidence=0.7, max_num_hands=2)
 
 
-    def detect(self, frame):
+    def detect(self, frame) -> bool:
         frame1 = cv2.resize(frame, (640, 480))
         
         results = self.hands.process(cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB))

@@ -113,5 +113,5 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-def update_config():
+def update_config() -> None:
     settings.update(vars(args))

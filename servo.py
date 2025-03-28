@@ -5,7 +5,8 @@ from settings.config import *
 
 
 class Servo:
-    def __init__(self):
+    """Controls the servo motor that operates the feeder cover.\n"""
+    def __init__(self) -> None:
         self.pin = settings.servo_pin
 
         speed = {"slow": 15, "medium": 40, "fast": 75}
@@ -21,12 +22,24 @@ class Servo:
         self.close_cover(True)
 
 
-    def cleanup(self):
+    def cleanup(self) -> None:
+        """
+        Release resources of GPIO.\n
+        Must be called when shutting down to prevent issues and to free GPIO resources.
+        """
         self.pwm.stop()
         GPIO.cleanup(self.pin)
 
 
-    def set_angle(self, angle, first=False):
+    def set_angle(self, angle: int, first: bool=False) -> None:
+        """
+        Set the servo to a specific angle.\n
+        For the first movement, the servo moves directly to the position.
+        For subsequent movements, the servo moves step by step for smoother motion.\n
+        Args:
+            angle: Target angle (0-180 degrees)
+            first: Whether this is the first movement (True) or a regular movement (False)
+        """
         if first:
             duty_cycle = 2 + (angle / 18)
             self.pwm.ChangeDutyCycle(duty_cycle)
@@ -43,13 +56,13 @@ class Servo:
         self.pwm.ChangeDutyCycle(0)
 
 
-    def open_cover(self, first=False):
+    def open_cover(self, first: bool=False) -> None:
         self.set_angle(settings.open_angle, first)
         self.cover_opened = True
         log.info("Cover opened")
 
 
-    def close_cover(self, first=False):
+    def close_cover(self, first: bool=False) -> None:
         self.set_angle(settings.close_angle, first)
         self.cover_opened = False
         log.info("Cover closed")

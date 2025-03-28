@@ -5,7 +5,7 @@ import numpy as np
 from settings.config import *
 
 class SquirrelDetector:
-    def __init__(self):
+    def __init__(self) -> None:
         self.interpreter = tflite.Interpreter(model_path=settings.squirrel_model_path)
         self.interpreter.allocate_tensors()
         
@@ -21,7 +21,7 @@ class SquirrelDetector:
             self.labels = [line.strip() for line in f.readlines()]
 
 
-    def detect(self, frame1):
+    def detect(self, frame1) -> bool:
         frame = frame1.copy()
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame_resized = cv2.resize(frame_rgb, (self.width, self.height))
@@ -73,14 +73,14 @@ class SquirrelDetector:
 
 
 class MyDetector:
-    def __init__(self):
+    def __init__(self) -> None:
         self.interpreter = tflite.Interpreter(model_path=settings.my_squirrel_model_path)
         self.interpreter.allocate_tensors()
 
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
 
-    def detect(self, frame):
+    def detect(self, frame) -> bool:
         frame_resized = cv2.resize(frame, (224, 224)) / 255.0
         img_array = np.expand_dims(frame_resized, axis=0).astype(np.float32) 
         

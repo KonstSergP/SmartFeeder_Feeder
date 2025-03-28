@@ -4,6 +4,7 @@ from feeder import SmartFeeder
 from settings.config import log
 
 
+# Keeping it global allows access from the signal handler
 feeder = None
 
 
@@ -20,10 +21,9 @@ def signal_handler(sig, frame):
 
 
 if __name__ == "__main__":
-    # Register signal handler for SIGINT (Ctrl+C)
+    # Register signal handler for SIGINT (Ctrl+C) and SIGTERM
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
-
 
     try:
         feeder = SmartFeeder()

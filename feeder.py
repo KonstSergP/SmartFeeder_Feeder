@@ -10,7 +10,12 @@ from settings.config import *
 
 
 class SmartFeeder:
-    def __init__(self):
+    """
+    Main controller class for the feeder.\n
+    Coordinates interactions between hardware components (camera, servo motor)
+    and software systems (computer vision detectors, server connection, video storage).
+    """
+    def __init__(self) -> None:
         self.camera      = Camera()
         self.servo       = Servo()
         self.server_conn = ServerConnection(self.camera.start_stream, self.camera.stop_stream)
@@ -19,14 +24,26 @@ class SmartFeeder:
         log.info("Smart feeder init")
 
 
-    def cleanup(self):
+    def cleanup(self) -> None:
+        """
+        Release all resources and cleanup components.
+        Must be called when the system is shutting down or in case of errors.
+        """
         self.camera.cleanup()
         self.servo.cleanup()
         self.storage.cleanup()
         self.server_conn.cleanup()
 
 
-    def work(self):
+    def work(self) -> None:
+        """
+        Main operational loop of the feeder.\n
+        Captures frames, updates detectors, and handles state transitions.
+        The feeder operates in one of three states:
+        1. Capturing video, when a squirrel is detected
+        2. Cover opened, not squirrel but hands detected
+        3. Cover closed, default state
+        """
         while True:
             self.detectors.update_frame(self.camera.get_frame())
             log.debug("Next iteration")
@@ -39,17 +56,19 @@ class SmartFeeder:
                 self._handle_cover_closed()
 
 
-    def _handle_capture(self):
+    def _handle_capture(self) -> None:
+        """Handle the state when the system is capturing video."""
         if not self.detectors.detect_squirrel():
             self.camera.stop_capture()
             self.servo.close_cover()
-            self.storage.go_to_next_video()
+            self.storage.go_to_next_video() # Prepare for next video and upload current
         else:
             log.info("Capture continues")
             time.sleep(settings.sleep_time)
 
 
-    def _handle_cover_opened(self):
+    def _handle_cover_opened(self) -> None:
+        """Handle the state when the feeder cover is open."""
         if not self.detectors.detect_hands():
             self.servo.close_cover()
         else:
@@ -57,7 +76,13 @@ class SmartFeeder:
             time.sleep(settings.sleep_time)
 
 
-    def _handle_cover_closed(self):
+    def _handle_cover_closed(self) -> None:
+        """
+        Handle the default state when the feeder cover is closed.\n
+        If hands are detected it will open the feeder cover.\n
+        If a squirrel is detected it will open the feeder cover
+        and start video recording
+        """
         if self.detectors.detect_hands():
             self.servo.open_cover()
             time.sleep(settings.sleep_time)
