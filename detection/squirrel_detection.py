@@ -21,8 +21,7 @@ class SquirrelDetector:
             self.labels = [line.strip() for line in f.readlines()]
 
 
-    def detect(self, frame1) -> bool:
-        frame = frame1.copy()
+    def detect(self, frame) -> bool:
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame_resized = cv2.resize(frame_rgb, (self.width, self.height))
         input_data = np.expand_dims(frame_resized, axis=0)
@@ -34,9 +33,7 @@ class SquirrelDetector:
         # Retrieve detection results
 
         boxes = self.interpreter.get_tensor(self.boxes_index)[0] # Bounding box coordinates of detected objects
-
         classes = self.interpreter.get_tensor(self.classes_index)[0] # Class index of detected objects
-
         scores = self.interpreter.get_tensor(self.scores_index)[0] # Confidence of detected objects
 
         found = False
@@ -47,11 +44,8 @@ class SquirrelDetector:
                 # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
 
                 ymin = int(max(1,(boxes[i][0] * settings.height)))
-
                 xmin = int(max(1,(boxes[i][1] * settings.width)))
-
                 ymax = int(min(settings.height,(boxes[i][2] * settings.height)))
-
                 xmax = int(min(settings.width,(boxes[i][3] * settings.width)))
                 
                 cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
@@ -64,7 +58,7 @@ class SquirrelDetector:
 
                 label_ymin = max(ymin, labelSize[1] + 10) # Make sure not to draw label too close to top of window
 
-                cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
+                cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED)
 
                 cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
         cv2.imshow('Object detector', frame)

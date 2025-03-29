@@ -110,6 +110,12 @@ parser.add_argument(
     help='night mode: auto (light sensor), day, or night',
 )
 
+parser.add_argument(
+    '--fps',
+    type=int, default=settings.fps,
+    help='Framerate of video and stream',
+)
+
 
 args = parser.parse_args()
 

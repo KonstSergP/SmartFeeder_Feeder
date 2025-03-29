@@ -1,6 +1,9 @@
-mediapipe==0.10.20
-numpy==2.2.1
-opencv_python==4.10.0.84
-picamera2==0.3.24
+dynaconf==3.2.10
+mediapipe==0.10.18
+numpy<2
+picamera2==0.3.25
+python-socketio==5.12.1
 Requests==2.32.3
 tflite_runtime==2.14.0
+opencv_python==4.10.0.84
+websocket-client==1.8.0

@@ -38,6 +38,7 @@ sleep_time = 5
 bitrate = 10000000
 format = "RGB888"
 video_file_ext = "mp4"
+fps = 20
 
 
 VIDEO_FOLDER = "videos"

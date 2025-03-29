@@ -17,27 +17,37 @@ class Camera:
         """
         self.camera_mode_controller = None
 
-        # Initialize day/night mode controller if it can be enabled
-        if settings.enable_camera_mode_control:
-            self.camera_mode_controller = CameraModeController()
-
         # Initialize and configure camera using Picamera2 library
         try:
             self._picam = Picamera2()
         except:
             log.error("Can\'t turn on camera", exc_info=True)
             exit(1)
-        self._picam.configure(self._picam.create_video_configuration(
-                    main={
-                        "size":   [settings.width, settings.height],
-                        "format": settings.format},
-                    controls={
-                        "FrameDurationLimits": (50000, 50000)}
-                    ))
+
+        self.configure_camera()
         self._picam.start()
 
         self._capture_encoder = H264Encoder(bitrate=settings.bitrate)
         self._stream_encoder  = H264Encoder(bitrate=settings.bitrate)
+
+
+    def configure_camera(self) -> None:
+        """Configure the camera based on the current settings.\n"""
+        # Initialize day/night mode controller if it can be enabled
+        if settings.enable_camera_mode_control:
+            self.camera_mode_controller = CameraModeController()
+
+        frame_duration = int(1000000 / settings.fps)
+
+        config = self._picam.create_video_configuration(
+                    main={
+                        "size":   [settings.width, settings.height],
+                        "format": settings.format},
+                    controls={
+                        "FrameDurationLimits": (frame_duration, frame_duration)}
+                    )
+
+        self._picam.configure(config)
 
 
     @property
@@ -91,7 +101,7 @@ class Camera:
             port: Port number to stream to
             path: Stream path
         """
-        self._stream_encoder.output = CaptureAndStreamOutput(f"-f rtp_mpegts rtp://{settings.server_host}:{port}/{path}", audio=True)
+        self._stream_encoder.output = CaptureAndStreamOutput(f"-preset fast -tune zerolatency -f rtp_mpegts rtp://{settings.server_host}:{port}/{path}", audio=True)
         self._picam.start_encoder(self._stream_encoder)
         log.info(f"Stream started: rtp://{settings.server_host}:{port}/{path}")
 
