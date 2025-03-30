@@ -1,5 +1,5 @@
 
-VENV := .venv
+VENV := ../my_env
 PYTHON := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 PYTEST := $(VENV)/bin/pytest
@@ -22,7 +22,7 @@ run:
 
 
 coverage:
-	$(COVERAGE) run --rcfile=app/settings/.coveragerc -m pytest -v
+	$(COVERAGE) run --rcfile=settings/.coveragerc -m pytest
 	$(COVERAGE) report
 
 

@@ -1,6 +1,12 @@
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, Mock
 from feeder import SmartFeeder
+
+
+@pytest.fixture
+def mock_sleep():
+    with patch('feeder.time.sleep') as mock_sleep:
+        yield mock_sleep
 
 
 @pytest.fixture
@@ -186,6 +192,9 @@ class TestSmartFeeder:
         feeder = feeder_with_mocks
         mock_camera.capturing = True
         mock_servo.cover_opened = False
+        feeder._handle_capture = Mock()
+        feeder._handle_cover_opened = Mock()
+        feeder._handle_cover_closed = Mock()
 
         feeder.work_iteration()
 
@@ -201,6 +210,9 @@ class TestSmartFeeder:
         feeder = feeder_with_mocks
         mock_camera.capturing = False
         mock_servo.cover_opened = True
+        feeder._handle_capture = Mock()
+        feeder._handle_cover_opened = Mock()
+        feeder._handle_cover_closed = Mock()
 
         feeder.work_iteration()
 
@@ -216,6 +228,9 @@ class TestSmartFeeder:
         feeder = feeder_with_mocks
         mock_camera.capturing = False
         mock_servo.cover_opened = False
+        feeder._handle_capture = Mock()
+        feeder._handle_cover_opened = Mock()
+        feeder._handle_cover_closed = Mock()
 
         feeder.work_iteration()
 

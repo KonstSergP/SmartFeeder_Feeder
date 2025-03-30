@@ -37,6 +37,7 @@ def mock_settings():
         mock_settings.height = 480
         mock_settings.format = "RGB888"
         mock_settings.bitrate = 10000000
+        mock_settings.enable_camera_mode_control = True
         yield mock_settings
 
 
@@ -52,15 +53,19 @@ class TestCamera:
         assert camera._stream_encoder is not None
 
 
-    @patch('camera.camera.exit')
-    def test_init_camera_failure(self, mock_exit, mock_picamera):
+    @patch('camera.camera.exit', side_effect=RuntimeError)
+    @patch('camera.camera.log')
+    @patch('camera.camera.Picamera2', side_effect=Exception)
+    def test_init_camera_failure(self, mock_exit, mock_log, mock_Picamera):
         mock_picamera.side_effect = Exception("Camera init failed")
         
-        with patch('camera.camera.log') as mock_log:
+        try:
             Camera()
+        except RuntimeError:
             assert mock_log.error.called
             assert mock_exit.called
-
+        else:
+            assert False
 
     def test_configure_camera_with_mode_control(self, mock_settings, mock_picamera, mock_mode_controller):
         
