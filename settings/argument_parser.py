@@ -116,6 +116,12 @@ parser.add_argument(
     help='Framerate of video and stream',
 )
 
+parser.add_argument(
+    '--show-preview',
+    default=settings.show_preview,
+    action='store_true',
+    help='show frames on display using opencv',
+)
 
 args = parser.parse_args()
 

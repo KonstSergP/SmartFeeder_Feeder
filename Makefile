@@ -6,7 +6,7 @@ PYTEST := $(VENV)/bin/pytest
 COVERAGE := $(VENV)/bin/coverage
 
 
-.PHONY: all install run coverage clean deepclean
+.PHONY: all install run preview coverage clean deepclean
 all: install coverage
 
 
@@ -19,6 +19,9 @@ install:
 
 run:
 	$(PYTHON) main.py
+
+preview:
+	$(PYTHON) main.py --show-preview
 
 
 coverage:

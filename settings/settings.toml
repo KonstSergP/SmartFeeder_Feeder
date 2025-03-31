@@ -47,3 +47,6 @@ VIDEO_FOLDER = "videos"
 enable_camera_mode_control = true
 camera_mode_pin = 4
 camera_mode = "auto"
+
+
+show_preview = false

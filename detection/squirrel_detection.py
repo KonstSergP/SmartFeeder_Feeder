@@ -1,8 +1,8 @@
 import tflite_runtime.interpreter as tflite
 import cv2
 import numpy as np
-
 from settings.config import *
+
 
 class SquirrelDetector:
     def __init__(self) -> None:
@@ -30,18 +30,17 @@ class SquirrelDetector:
 
         self.interpreter.invoke()
 
-        # Retrieve detection results
-
-        boxes = self.interpreter.get_tensor(self.boxes_index)[0] # Bounding box coordinates of detected objects
-        classes = self.interpreter.get_tensor(self.classes_index)[0] # Class index of detected objects
-        scores = self.interpreter.get_tensor(self.scores_index)[0] # Confidence of detected objects
+        boxes = self.interpreter.get_tensor(self.boxes_index)[0]
+        classes = self.interpreter.get_tensor(self.classes_index)[0]
+        scores = self.interpreter.get_tensor(self.scores_index)[0]
 
         found = False
         for i in range(len(scores)):
 
             if ((scores[i] > settings.min_conf_threshhold) and (scores[i] <= 1.0)):
-                if (self.labels[int(classes[i])]) == "squirrel": found = True
-                # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
+                if (self.labels[int(classes[i])]) == "squirrel":
+                    found = True
+                    if not settings.show_preview: break
 
                 ymin = int(max(1,(boxes[i][0] * settings.height)))
                 xmin = int(max(1,(boxes[i][1] * settings.width)))
@@ -50,23 +49,20 @@ class SquirrelDetector:
                 
                 cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
 
-                object_name = self.labels[int(classes[i])] # Look up object name from "labels" array using class index
-
-                label = '%s: %d%%' % (object_name, int(scores[i]*100)) # Example: 'person: 72%'
-
-                labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2) # Get font size
-
-                label_ymin = max(ymin, labelSize[1] + 10) # Make sure not to draw label too close to top of window
-
+                object_name = self.labels[int(classes[i])]
+                label = '%s: %d%%' % (object_name, int(scores[i]*100))
+                labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
+                label_ymin = max(ymin, labelSize[1] + 10)
                 cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED)
+                cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
 
-                cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
-        cv2.imshow('Object detector', frame)
-        cv2.waitKey(1)
+        if settings.show_preview:
+            cv2.imshow('Object detector', frame)
+            cv2.waitKey(1)
         return found
 
 
-class MyDetector:
+class CustomSquirrelDetector:
     def __init__(self) -> None:
         self.interpreter = tflite.Interpreter(model_path=settings.my_squirrel_model_path)
         self.interpreter.allocate_tensors()

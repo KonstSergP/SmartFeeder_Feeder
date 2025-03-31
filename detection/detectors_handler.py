@@ -1,12 +1,12 @@
 from .hands_detection import HandsDetector
-from .squirrel_detection import SquirrelDetector, MyDetector
+from .squirrel_detection import SquirrelDetector, CustomSquirrelDetector
 
 
 class DetectorsHandler:
     """Coordinates different computer vision detectors."""
     def __init__(self) -> None:
         self._squirrel_detector = SquirrelDetector()
-        #self._squirrel_detector = MyDetector()
+        #self._squirrel_detector = CustomSquirrelDetector()
         self._hands_detector    = HandsDetector()
         self._frame = None
 

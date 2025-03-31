@@ -2,6 +2,7 @@ import mediapipe
 import cv2
 drawingModule = mediapipe.solutions.drawing_utils
 handsModule = mediapipe.solutions.hands
+from settings.config import settings
 
 
 class HandsDetector:
@@ -11,13 +12,15 @@ class HandsDetector:
 
     def detect(self, frame) -> bool:
         frame1 = cv2.resize(frame, (640, 480))
-        
-        results = self.hands.process(cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB))
-        
-        if results.multi_hand_landmarks != None:
-            for handLandmarks in results.multi_hand_landmarks:
-                  drawingModule.draw_landmarks(frame1, handLandmarks, handsModule.HAND_CONNECTIONS)
 
-        cv2.imshow('Object detector', frame1)
-        cv2.waitKey(1)
+        results = self.hands.process(cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB))
+
+        if settings.show_preview:
+            if results.multi_hand_landmarks != None:
+                for handLandmarks in results.multi_hand_landmarks:
+                    drawingModule.draw_landmarks(frame1, handLandmarks, handsModule.HAND_CONNECTIONS)
+
+            cv2.imshow('Object detector', frame1)
+            cv2.waitKey(1)
+
         return results.multi_hand_landmarks != None
