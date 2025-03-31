@@ -1,7 +1,5 @@
 import pytest
 import os
-import threading
-import time
 from unittest.mock import patch, MagicMock, call, mock_open
 
 from video_storage import VideoStorage
