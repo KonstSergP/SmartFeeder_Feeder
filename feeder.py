@@ -36,24 +36,29 @@ class SmartFeeder:
 
 
     def work(self) -> None:
+        while True:
+            self.work_iteration()
+
+    
+    def work_iteration(self) -> None:
         """
-        Main operational loop of the feeder.\n
         Captures frames, updates detectors, and handles state transitions.
         The feeder operates in one of three states:
         1. Capturing video, when a squirrel is detected
         2. Cover opened, not squirrel but hands detected
         3. Cover closed, default state
         """
-        while True:
-            self.detectors.update_frame(self.camera.get_frame())
-            log.debug("Next iteration")
-            
-            if self.camera.capturing:
-                self._handle_capture()
-            elif self.servo.cover_opened:
-                self._handle_cover_opened()
-            else:
-                self._handle_cover_closed()
+        self.detectors.update_frame(self.camera.get_frame())
+        log.debug("Next iteration")
+        
+        if self.camera.capturing:
+            self._handle_capture()
+        elif self.servo.cover_opened:
+            self._handle_cover_opened()
+        else:
+            self._handle_cover_closed()
+
+        
 
 
     def _handle_capture(self) -> None:
