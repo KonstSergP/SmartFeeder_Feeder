@@ -51,9 +51,10 @@ class VideoStorage:
             return
 
         with self.lock:
-            log.debug("Sending files: "+" ".join(os.listdir(settings.video_folder)))
-            
-            for filename in os.listdir(settings.video_folder):
+            files = os.listdir(settings.video_folder)
+            log.debug("Sending files: "+" ".join(files))
+
+            for filename in files:
                 # Skip the video currently being recorded
                 if filename != f"{self.last_id}.{settings.video_file_ext}":
                     log.debug(f"Sending file {filename}")
@@ -71,8 +72,8 @@ class VideoStorage:
                                 log.info(f"Video {filename} sent")
                             else:
                                 log.error(f"Video upload failed. Status code: {r.status_code}")
-                    except requests.Timeout:
-                        log.error("Timeout")
+                    except OSError: # for some reason Timeout can't be catched
+                        log.error("Request error", exc_info=True)
                     except:
                         log.error("Can\'t send video to server", exc_info=True)
 
