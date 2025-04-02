@@ -1,3 +1,9 @@
+# Copyright (c) 2021, Raspberry Pi
+# This file is part of picamera2, licensed under the BSD 2-Clause License.
+# Modified Petrov Konstantin in 2025 (function start)
+# See the camera/picamera2_fix/LICENSE file for details.
+
+
 import gc
 import signal
 import subprocess
@@ -9,7 +15,7 @@ from picamera2.outputs import Output
 
 class CaptureAndStreamOutput(Output):
     """
-    Copy of FfmpegOutput with some changes
+    Copy of FfmpegOutput with small change to disable ffmpeg exit when thread in which popen was called dies
     """
 
     def __init__(self, output_filename, audio=False, audio_device="default", audio_sync=-0.3,
@@ -57,10 +63,11 @@ class CaptureAndStreamOutput(Output):
 
         command = ['ffmpeg'] + general_options + audio_input + video_input + \
             audio_codec + video_codec + self.output_filename.split()
-        # The preexec_fn is a slightly nasty way of ensuring FFmpeg gets stopped if we quit
-        # without calling stop() (which is otherwise not guaranteed).
-        #self.ffmpeg = subprocess.Popen(command, stdin=subprocess.PIPE, preexec_fn=lambda: prctl.set_pdeathsig(signal.SIGKILL))
+        
         self.ffmpeg = subprocess.Popen(command, stdin=subprocess.PIPE)
+        # With this, ffmpeg will die when the thread in which it was created dies
+        #self.ffmpeg = subprocess.Popen(command, stdin=subprocess.PIPE, preexec_fn=lambda: prctl.set_pdeathsig(signal.SIGKILL))
+
         super().start()
 
     def stop(self):

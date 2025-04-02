@@ -6,6 +6,7 @@ from settings.config import settings
 
 
 class HandsDetector:
+    """Class that uses mediapipe.solutions.hands for detecting hands on camera image"""
     def __init__(self) -> None:
         self.hands = handsModule.Hands(static_image_mode=False, min_detection_confidence=0.7, min_tracking_confidence=0.7, max_num_hands=2)
 

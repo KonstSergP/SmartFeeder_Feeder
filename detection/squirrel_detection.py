@@ -42,6 +42,7 @@ class SquirrelDetector:
                     found = True
                     if not settings.show_preview: break
 
+                # if show_preview
                 ymin = int(max(1,(boxes[i][0] * settings.height)))
                 xmin = int(max(1,(boxes[i][1] * settings.width)))
                 ymax = int(min(settings.height,(boxes[i][2] * settings.height)))
@@ -63,6 +64,7 @@ class SquirrelDetector:
 
 
 class CustomSquirrelDetector:
+    """Class that uses our own tflite model for detecting squirrels"""
     def __init__(self) -> None:
         self.interpreter = tflite.Interpreter(model_path=settings.my_squirrel_model_path)
         self.interpreter.allocate_tensors()

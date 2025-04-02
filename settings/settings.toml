@@ -3,6 +3,7 @@ MODE = "development"
 
 log_level = "DEBUG"
 log_format = "%(asctime)s - %(levelname)s - %(message)s"
+log_file = "feeder_log.log"
 
 
 my_squirrel_model_path = "./squirrel_model/modelv3.1.tflite"
