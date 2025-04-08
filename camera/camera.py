@@ -80,7 +80,8 @@ class Camera:
         Start capturing video to a local file.\n
         Uses the CaptureAndStreamOutput which is a slightly adjusted FfmpegOutput
         """
-        self._capture_encoder.output = CaptureAndStreamOutput(video_name, audio=True)
+        self._capture_encoder.output = CaptureAndStreamOutput(video_name,
+                                                              audio=settings.enable_audio)
         self._picam.start_encoder(self._capture_encoder)
         log.info("Capture started")
 
@@ -101,7 +102,8 @@ class Camera:
             port: Port number to stream to
             path: Stream path
         """
-        self._stream_encoder.output = CaptureAndStreamOutput(f"-preset fast -tune zerolatency -f rtp_mpegts rtp://{settings.server_host}:{port}/{path}", audio=True)
+        self._stream_encoder.output = CaptureAndStreamOutput(f"-preset fast -tune zerolatency -f rtp_mpegts rtp://{settings.server_host}:{port}/{path}",
+                                                             audio=settings.enable_audio)
         self._picam.start_encoder(self._stream_encoder)
         log.info(f"Stream started: rtp://{settings.server_host}:{port}/{path}")
 

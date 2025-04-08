@@ -17,7 +17,13 @@ class SmartFeeder:
     """
     def __init__(self) -> None:
         self.camera      = Camera()
-        self.servo       = Servo()
+
+        if settings.enable_servo:
+            self.servo = Servo()
+        else:
+            self.servo = None
+            log.warning("Servo motor is disabled.")
+
         self.server_conn = ServerConnection(self.camera.start_stream, self.camera.stop_stream)
         self.storage     = VideoStorage(self.server_conn)
         self.detectors   = DetectorsHandler()
@@ -30,7 +36,8 @@ class SmartFeeder:
         Must be called when the system is shutting down or in case of errors.
         """
         self.camera.cleanup()
-        self.servo.cleanup()
+        if self.servo:
+            self.servo.cleanup()
         self.storage.cleanup()
         self.server_conn.cleanup()
 
@@ -53,7 +60,7 @@ class SmartFeeder:
         
         if self.camera.capturing:
             self._handle_capture()
-        elif self.servo.cover_opened:
+        elif self.servo and self.servo.cover_opened:
             self._handle_cover_opened()
         else:
             self._handle_cover_closed()
@@ -65,7 +72,8 @@ class SmartFeeder:
         """Handle the state when the system is capturing video."""
         if not self.detectors.detect_squirrel():
             self.camera.stop_capture()
-            self.servo.close_cover()
+            if self.servo:
+                self.servo.close_cover()
             self.storage.go_to_next_video() # Prepare for next video and upload current
         else:
             log.info("Capture continues")
@@ -75,7 +83,8 @@ class SmartFeeder:
     def _handle_cover_opened(self) -> None:
         """Handle the state when the feeder cover is open."""
         if not self.detectors.detect_hands():
-            self.servo.close_cover()
+            if self.servo:
+                self.servo.close_cover()
         else:
             log.info("Cover is still open")
             time.sleep(settings.sleep_time)
@@ -89,10 +98,12 @@ class SmartFeeder:
         and start video recording
         """
         if self.detectors.detect_hands():
-            self.servo.open_cover()
+            if self.servo:
+                self.servo.open_cover()
             time.sleep(settings.sleep_time)
 
         elif self.detectors.detect_squirrel():
-            self.servo.open_cover()
+            if self.servo:
+                self.servo.open_cover()
             self.camera.capture_video(self.storage.get_new_video_name())
             time.sleep(settings.sleep_time)

@@ -38,6 +38,14 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '--disable-servo',
+    action='store_false',
+    default=settings.enable_servo,
+    help='disable servo motor code when servo does not exist',
+    dest='enable_servo'
+)
+
+parser.add_argument(
     '--server-host',
     type=str, default=settings.server_host,
     help='ip address or domain name of server'
@@ -121,6 +129,14 @@ parser.add_argument(
     default=settings.show_preview,
     action='store_true',
     help='show frames on display using opencv',
+)
+
+parser.add_argument(
+    '--disable-audio',
+    action='store_false',
+    default=settings.enable_audio,
+    help='disable audio recording when microphone does not exist',
+    dest='enable_audio'
 )
 
 args = parser.parse_args()

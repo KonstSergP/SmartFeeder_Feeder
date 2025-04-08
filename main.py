@@ -15,7 +15,7 @@ def signal_handler(sig, frame):
             feeder.cleanup()
         except Exception as e:
             log.error(f"Error during feeder cleanup: {e}", exc_info=True)
-        
+
     log.info("Shutdown complete")
     sys.exit(0)
 

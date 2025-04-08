@@ -18,6 +18,10 @@ servo_pin = 14
 servo_speed = "fast"
 open_angle = 90
 close_angle = 0
+enable_servo = true
+
+
+enable_audio = true
 
 
 server_host = "192.168.1.74"
