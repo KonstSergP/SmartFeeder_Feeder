@@ -6,7 +6,7 @@ log_format = "%(asctime)s - %(levelname)s - %(message)s"
 log_file = "feeder_log.log"
 
 
-my_squirrel_model_path = "./squirrel_model/modelv3.1.tflite"
+my_squirrel_model_path = "./squirrel_model/modelv4.1.tflite"
 squirrel_model_path = "./squirrel_model/detect.tflite"
 squirrel_labels_path = "./squirrel_model/labelmap.txt"
 
@@ -15,8 +15,8 @@ min_conf_threshhold = 0.9
 
 
 servo_pin = 14
-servo_speed = "fast"
-open_angle = 90
+servo_speed = "slow"
+open_angle = 180
 close_angle = 0
 enable_servo = true
 
@@ -24,9 +24,9 @@ enable_servo = true
 enable_audio = true
 
 
-server_host = "192.168.1.74"
+server_host = "147.45.68.145"
 server_port = 5000
-connection_timeout = 5
+connection_timeout = 60
 online_mode = true
 
 
@@ -37,7 +37,7 @@ width = 640
 height = 480
 
 
-sleep_time = 5
+sleep_time = 20
 
 
 bitrate = 10000000

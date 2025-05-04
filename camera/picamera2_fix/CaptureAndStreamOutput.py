@@ -7,6 +7,8 @@
 import gc
 import signal
 import subprocess
+import time
+from ..camera import log
 
 import prctl
 from picamera2.outputs import Output
@@ -65,6 +67,8 @@ class CaptureAndStreamOutput(Output):
             audio_codec + video_codec + self.output_filename.split()
         
         self.ffmpeg = subprocess.Popen(command, stdin=subprocess.PIPE)
+        #self.ffmpeg = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #log.error(self.ffmpeg.communicate())
         # With this, ffmpeg will die when the thread in which it was created dies
         #self.ffmpeg = subprocess.Popen(command, stdin=subprocess.PIPE, preexec_fn=lambda: prctl.set_pdeathsig(signal.SIGKILL))
 

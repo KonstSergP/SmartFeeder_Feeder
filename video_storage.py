@@ -3,6 +3,7 @@ import threading
 import requests
 from server_connection import ServerConnection
 from typing import Optional
+import time
 from settings.config import *
 
 
@@ -59,26 +60,30 @@ class VideoStorage:
                 if filename != f"{self.last_id}.{settings.video_file_ext}":
                     log.debug(f"Sending file {filename}")
                     video_sent = False
-                    try:
-                        with open(os.path.join(settings.video_folder, filename), "rb") as f:
-                            feeder_id = self.server_connection.feeder_id
-                            files={"video": f}
-                            r = requests.post(f"http://{get_socket_address()}/upload",
-                                                files=files,
-                                                timeout=settings.connection_timeout,
-                                                data={"id": feeder_id})
-                            if r.status_code == 200:
-                                video_sent = True
-                                log.info(f"Video {filename} sent")
-                            else:
-                                log.error(f"Video upload failed. Status code: {r.status_code}")
-                    except OSError: # for some reason Timeout can't be catched
-                        log.error("Request error", exc_info=True)
-                    except:
-                        log.error("Can\'t send video to server", exc_info=True)
+                    while not video_sent:
+                        try:
+                            with open(os.path.join(settings.video_folder, filename), "rb") as f:
+                                feeder_id = self.server_connection.feeder_id
+                                files={"video": f}
+                                r = requests.post(f"http://{get_socket_address()}/upload",
+                                                    files=files,
+                                                    timeout=settings.connection_timeout,
+                                                    data={"id": feeder_id})
+                                if r.status_code == 200:
+                                    video_sent = True
+                                    log.info(f"Video {filename} sent")
+                                else:
+                                    log.error(f"Video upload failed. Status code: {r.status_code}")
+                        except OSError: # for some reason Timeout can't be catched
+                            log.error("Request error", exc_info=True)
+                        except:
+                            log.error("Can\'t send video to server", exc_info=True)
 
-                    # Delete the video file if successfully uploaded
-                    if video_sent:
-                        os.remove(os.path.join(settings.video_folder, filename))
-                    else:
-                        return
+                        # Delete the video file if successfully uploaded
+                        if video_sent:
+                            os.remove(os.path.join(settings.video_folder, filename))
+                        else:
+                            if not self.server_connection.connected:
+                                log.info("No connection to server, sending stopped")
+                                return
+                            time.sleep(30)

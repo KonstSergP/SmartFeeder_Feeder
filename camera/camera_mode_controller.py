@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import time
 from settings.config import *
 
 
@@ -17,8 +18,10 @@ class CameraModeController:
         self._current_state = None
 
         # Configure GPIO based on selected mode
-        GPIO.setup(self.camera_mode_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        #GPIO.output(self.camera_mode_pin, GPIO.LOW)
+        GPIO.setup(self.camera_mode_pin, GPIO.OUT)
+        GPIO.output(self.camera_mode_pin, GPIO.HIGH)
+        time.sleep(2)
+        GPIO.cleanup(self.camera_mode_pin)
         if settings.camera_mode == "auto":
             log.info(f"Camera mode set to auto (controlled by light sensor)")
             GPIO.setup(self.camera_mode_pin, GPIO.IN)

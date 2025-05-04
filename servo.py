@@ -9,7 +9,7 @@ class Servo:
     def __init__(self) -> None:
         self.pin = settings.servo_pin
 
-        speed = {"slow": 15, "medium": 40, "fast": 75}
+        speed = {"slow": 0.07, "medium": 0.055, "fast": 0.045}
         self.speed = speed[settings.servo_speed]
         self.angle = None
         self.cover_opened = None
@@ -41,16 +41,16 @@ class Servo:
             first: Whether this is the first movement (True) or a regular movement (False)
         """
         if first:
-            duty_cycle = 2 + (angle / 18)
+            duty_cycle = 2.5 + (angle / 18)
             self.pwm.ChangeDutyCycle(duty_cycle)
             sleep(0.5)
             self.angle = angle
         else:
             duty_cycle = 2 + (self.angle / 18)
-            step = 1 if angle > self.angle else -1
+            step = 5 if angle > self.angle else -5
             while self.angle != angle:
-                self.pwm.ChangeDutyCycle(2 + (self.angle / 18))
-                sleep(1 / (4*self.speed))
+                self.pwm.ChangeDutyCycle(2.5 + (self.angle / 18))
+                sleep(self.speed)
                 self.angle += step
 
         self.pwm.ChangeDutyCycle(0)

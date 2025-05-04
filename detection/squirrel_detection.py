@@ -71,17 +71,24 @@ class CustomSquirrelDetector:
 
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
+        self.input_shape = self.input_details[0]['shape']
+        self.input_height = self.input_shape[1]
+        self.input_width = self.input_shape[2]
+        self.input_dtype = self.input_details[0]['dtype']
+        self.input_index = self.input_details[0]['index']
+        self.output_index = self.output_details[0]['index']
 
     def detect(self, frame) -> bool:
-        frame_resized = cv2.resize(frame, (224, 224)) / 255.0
-        img_array = np.expand_dims(frame_resized, axis=0).astype(np.float32) 
+        frame_resized = cv2.resize(frame, (self.input_width, self.input_height))
+        rgb_frame = cv2.cvtColor(frame_resized, cv2.COLOR_BGR2RGB)
+        input_data = np.expand_dims(rgb_frame, axis=0).astype(self.input_dtype)
         
-        self.interpreter.set_tensor(self.input_details[0]['index'], img_array)
+        self.interpreter.set_tensor(self.input_index, input_data)
         self.interpreter.invoke()
-        prediction = self.interpreter.get_tensor(self.output_details[0]['index'])
+        prediction = self.interpreter.get_tensor(self.output_index)
+        scores = prediction[0]
         
-        class_index = np.argmax(prediction)
-        confidence = prediction[0][class_index]
-        
-        log.debug(f"Confidence: {confidence}")
-        return confidence > 0.9
+        max_score = np.max(scores)
+
+        log.debug(f"Confidence: {max_score}")
+        return max_score > 0.9
